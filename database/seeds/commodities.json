@@ -1,0 +1,66 @@
+[
+  {
+    "symbol": "GC=F",
+    "name": "Gold Futures",
+    "type": "commodity",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "GC=F"
+  },
+  {
+    "symbol": "SI=F",
+    "name": "Silver Futures",
+    "type": "commodity",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "SI=F"
+  },
+  {
+    "symbol": "PL=F",
+    "name": "Platinum Futures",
+    "type": "commodity",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "PL=F"
+  },
+  {
+    "symbol": "PA=F",
+    "name": "Palladium Futures",
+    "type": "commodity",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "PA=F"
+  },
+  {
+    "symbol": "CL=F",
+    "name": "Crude Oil WTI",
+    "type": "commodity",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "CL=F"
+  },
+  {
+    "symbol": "BZ=F",
+    "name": "Brent Crude Oil",
+    "type": "commodity",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "BZ=F"
+  },
+  {
+    "symbol": "NG=F",
+    "name": "Natural Gas",
+    "type": "commodity",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "NG=F"
+  },
+  {
+    "symbol": "HG=F",
+    "name": "Copper",
+    "type": "commodity",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "HG=F"
+  }
+]

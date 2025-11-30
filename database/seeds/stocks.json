@@ -1,0 +1,418 @@
+[
+  {
+    "symbol": "AAPL",
+    "name": "Apple",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "AAPL"
+  },
+  {
+    "symbol": "MSFT",
+    "name": "Microsoft",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "MSFT"
+  },
+  {
+    "symbol": "GOOGL",
+    "name": "Alphabet",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "GOOGL"
+  },
+  {
+    "symbol": "AMZN",
+    "name": "Amazon",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "AMZN"
+  },
+  {
+    "symbol": "NVDA",
+    "name": "NVIDIA",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "NVDA"
+  },
+  {
+    "symbol": "META",
+    "name": "Meta Platforms",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "META"
+  },
+  {
+    "symbol": "TSLA",
+    "name": "Tesla",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "TSLA"
+  },
+  {
+    "symbol": "BRK-B",
+    "name": "Berkshire Hathaway",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "BRK-B"
+  },
+  {
+    "symbol": "JPM",
+    "name": "JPMorgan Chase",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "JPM"
+  },
+  {
+    "symbol": "V",
+    "name": "Visa",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "V"
+  },
+  {
+    "symbol": "UNH",
+    "name": "UnitedHealth",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "UNH"
+  },
+  {
+    "symbol": "XOM",
+    "name": "Exxon Mobil",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "XOM"
+  },
+  {
+    "symbol": "MA",
+    "name": "Mastercard",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "MA"
+  },
+  {
+    "symbol": "JNJ",
+    "name": "Johnson & Johnson",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "JNJ"
+  },
+  {
+    "symbol": "PG",
+    "name": "Procter & Gamble",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "PG"
+  },
+  {
+    "symbol": "HD",
+    "name": "Home Depot",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "HD"
+  },
+  {
+    "symbol": "CVX",
+    "name": "Chevron",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "CVX"
+  },
+  {
+    "symbol": "LLY",
+    "name": "Eli Lilly",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "LLY"
+  },
+  {
+    "symbol": "ABBV",
+    "name": "AbbVie",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "ABBV"
+  },
+  {
+    "symbol": "MRK",
+    "name": "Merck",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "MRK"
+  },
+  {
+    "symbol": "AVGO",
+    "name": "Broadcom",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "AVGO"
+  },
+  {
+    "symbol": "KO",
+    "name": "Coca-Cola",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "KO"
+  },
+  {
+    "symbol": "PEP",
+    "name": "PepsiCo",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "PEP"
+  },
+  {
+    "symbol": "COST",
+    "name": "Costco",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "COST"
+  },
+  {
+    "symbol": "WMT",
+    "name": "Walmart",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "WMT"
+  },
+  {
+    "symbol": "BAC",
+    "name": "Bank of America",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "BAC"
+  },
+  {
+    "symbol": "PFE",
+    "name": "Pfizer",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "PFE"
+  },
+  {
+    "symbol": "TMO",
+    "name": "Thermo Fisher",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "TMO"
+  },
+  {
+    "symbol": "CSCO",
+    "name": "Cisco",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "CSCO"
+  },
+  {
+    "symbol": "MCD",
+    "name": "McDonald's",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "MCD"
+  },
+  {
+    "symbol": "ABT",
+    "name": "Abbott Labs",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "ABT"
+  },
+  {
+    "symbol": "CRM",
+    "name": "Salesforce",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "CRM"
+  },
+  {
+    "symbol": "ORCL",
+    "name": "Oracle",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "ORCL"
+  },
+  {
+    "symbol": "AMD",
+    "name": "AMD",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "AMD"
+  },
+  {
+    "symbol": "NFLX",
+    "name": "Netflix",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "NFLX"
+  },
+  {
+    "symbol": "ADBE",
+    "name": "Adobe",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "ADBE"
+  },
+  {
+    "symbol": "NKE",
+    "name": "Nike",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "NKE"
+  },
+  {
+    "symbol": "DIS",
+    "name": "Disney",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "DIS"
+  },
+  {
+    "symbol": "INTC",
+    "name": "Intel",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "INTC"
+  },
+  {
+    "symbol": "VZ",
+    "name": "Verizon",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "VZ"
+  },
+  {
+    "symbol": "T",
+    "name": "AT&T",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "T"
+  },
+  {
+    "symbol": "CMCSA",
+    "name": "Comcast",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "CMCSA"
+  },
+  {
+    "symbol": "WFC",
+    "name": "Wells Fargo",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "WFC"
+  },
+  {
+    "symbol": "PM",
+    "name": "Philip Morris",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "PM"
+  },
+  {
+    "symbol": "IBM",
+    "name": "IBM",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "IBM"
+  },
+  {
+    "symbol": "GS",
+    "name": "Goldman Sachs",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "GS"
+  },
+  {
+    "symbol": "MS",
+    "name": "Morgan Stanley",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "MS"
+  },
+  {
+    "symbol": "CAT",
+    "name": "Caterpillar",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "CAT"
+  },
+  {
+    "symbol": "BA",
+    "name": "Boeing",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "BA"
+  },
+  {
+    "symbol": "GE",
+    "name": "General Electric",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "GE"
+  },
+  {
+    "symbol": "CCO.TO",
+    "name": "Cameco",
+    "type": "stock",
+    "currency": "CAD",
+    "source": "yahoo",
+    "sourceId": "CCO.TO"
+  },
+  {
+    "symbol": "CCJ",
+    "name": "Cameco (US)",
+    "type": "stock",
+    "currency": "USD",
+    "source": "yahoo",
+    "sourceId": "CCJ"
+  }
+]

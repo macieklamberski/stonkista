@@ -1,178 +1,33 @@
 import { db } from '../instances/database.ts'
-import type { NewTicker } from '../types/schemas.ts'
+import type { NewCurrency, NewTicker } from '../types/schemas.ts'
+import commoditiesData from './seeds/commodities.json' with { type: 'json' }
+import cryptosData from './seeds/cryptos.json' with { type: 'json' }
+import currenciesData from './seeds/currencies.json' with { type: 'json' }
+import etfsData from './seeds/etfs.json' with { type: 'json' }
+import stocksData from './seeds/stocks.json' with { type: 'json' }
 import { tables } from './tables.ts'
 
-const tickers: Array<NewTicker> = [
-  {
-    symbol: 'AAPL',
-    name: 'Apple',
-    type: 'stock',
-    currency: 'USD',
-    source: 'yahoo',
-    sourceId: 'AAPL',
-  },
-  {
-    symbol: 'MSFT',
-    name: 'Microsoft',
-    type: 'stock',
-    currency: 'USD',
-    source: 'yahoo',
-    sourceId: 'MSFT',
-  },
-  {
-    symbol: 'GOOGL',
-    name: 'Alphabet',
-    type: 'stock',
-    currency: 'USD',
-    source: 'yahoo',
-    sourceId: 'GOOGL',
-  },
-  {
-    symbol: 'TSLA',
-    name: 'Tesla',
-    type: 'stock',
-    currency: 'USD',
-    source: 'yahoo',
-    sourceId: 'TSLA',
-  },
-  {
-    symbol: 'NVDA',
-    name: 'NVIDIA',
-    type: 'stock',
-    currency: 'USD',
-    source: 'yahoo',
-    sourceId: 'NVDA',
-  },
-  {
-    symbol: 'CCO.TO',
-    name: 'Cameco',
-    type: 'stock',
-    currency: 'CAD',
-    source: 'yahoo',
-    sourceId: 'CCO.TO',
-  },
-  {
-    symbol: 'BTC',
-    name: 'Bitcoin',
-    type: 'crypto',
-    currency: 'USD',
-    source: 'coingecko',
-    sourceId: 'bitcoin',
-  },
-  {
-    symbol: 'ETH',
-    name: 'Ethereum',
-    type: 'crypto',
-    currency: 'USD',
-    source: 'coingecko',
-    sourceId: 'ethereum',
-  },
-  {
-    symbol: 'SOL',
-    name: 'Solana',
-    type: 'crypto',
-    currency: 'USD',
-    source: 'coingecko',
-    sourceId: 'solana',
-  },
-  {
-    symbol: 'SPY',
-    name: 'S&P 500 ETF',
-    type: 'etf',
-    currency: 'USD',
-    source: 'yahoo',
-    sourceId: 'SPY',
-  },
-  {
-    symbol: 'QQQ',
-    name: 'QQQ Trust',
-    type: 'etf',
-    currency: 'USD',
-    source: 'yahoo',
-    sourceId: 'QQQ',
-  },
+const tickers = [
+  ...(stocksData as Array<NewTicker>),
+  ...(etfsData as Array<NewTicker>),
+  ...(commoditiesData as Array<NewTicker>),
+  ...(cryptosData as Array<NewTicker>),
 ]
 
-const prices: Record<string, number> = {
-  AAPL: 175,
-  MSFT: 430,
-  GOOGL: 175,
-  TSLA: 250,
-  NVDA: 140,
-  'CCO.TO': 75,
-  BTC: 100000,
-  ETH: 3500,
-  SOL: 250,
-  SPY: 600,
-  QQQ: 520,
-}
-
-const rates = {
-  USD: { EUR: 0.92, GBP: 0.79, JPY: 150, CAD: 1.36, CHF: 0.88, AUD: 1.53, PLN: 4.05 },
-  CAD: { USD: 0.74, EUR: 0.68, GBP: 0.58, JPY: 110, CHF: 0.65, AUD: 1.13, PLN: 2.98 },
-}
-
-const days = 30
-const dates = Array.from({ length: days + 1 }, (_, i) => {
-  const d = new Date()
-  d.setDate(d.getDate() - (days - i))
-  return d.toISOString().split('T')[0]
-})
-
-const randomize = (base: number, volatility: number) =>
-  base * (1 + (Math.random() * 2 - 1) * volatility)
+const currencies = currenciesData as Array<NewCurrency>
 
 const seed = async () => {
+  for (const currency of currencies) {
+    await db.insert(tables.currencies).values(currency).onConflictDoNothing()
+  }
+
+  console.log(`Seeded ${currencies.length} currencies`)
+
   for (const ticker of tickers) {
-    await db
-      .insert(tables.tickers)
-      .values({
-        symbol: ticker.symbol,
-        name: ticker.name,
-        type: ticker.type,
-        currency: ticker.currency ?? 'USD',
-        source: ticker.source ?? 'yahoo',
-        sourceId: ticker.sourceId,
-      })
-      .onConflictDoNothing()
+    await db.insert(tables.tickers).values(ticker).onConflictDoNothing()
   }
 
   console.log(`Seeded ${tickers.length} tickers`)
-
-  const allTickers = await db.query.tickers.findMany()
-
-  for (const ticker of allTickers) {
-    const base = prices[ticker.symbol] ?? 100
-    let price = base
-
-    for (const date of dates) {
-      price = randomize(price, 0.05)
-
-      await db
-        .insert(tables.prices)
-        .values({ tickerId: ticker.id, date, price: price.toFixed(8) })
-        .onConflictDoNothing()
-    }
-  }
-
-  console.log(`Seeded ${allTickers.length * dates.length} prices`)
-
-  for (const [from, toRates] of Object.entries(rates)) {
-    for (const [to, base] of Object.entries(toRates)) {
-      let rate = base
-
-      for (const date of dates) {
-        rate = randomize(rate, 0.005)
-
-        await db
-          .insert(tables.rates)
-          .values({ date, fromCurrency: from, toCurrency: to, rate: rate.toFixed(10) })
-          .onConflictDoNothing()
-      }
-    }
-  }
-
-  console.log(`Seeded ${Object.values(rates).flatMap(Object.keys).length * dates.length} rates`)
   process.exit(0)
 }
 
