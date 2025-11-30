@@ -2,9 +2,22 @@ import { prices } from '../database/tables.ts'
 import { db } from '../instances/database.ts'
 import type { NewPrice } from '../types/schemas.ts'
 
-// Format price with dynamic precision, stripping trailing zeros.
-export const formatPrice = (price: number) => {
-  return price.toFixed(16).replace(/\.?0+$/, '')
+export const formatPrice = (price: string | number) => {
+  if (typeof price === 'string') {
+    return price.replace(/\.?0+$/, '')
+  }
+
+  // For numbers, use toPrecision(15) to limit significant digits and avoid FP artifacts.
+  // Handle scientific notation for small numbers by converting back through toFixed.
+  const precise = price.toPrecision(15)
+
+  if (precise.includes('e')) {
+    return parseFloat(precise)
+      .toFixed(16)
+      .replace(/\.?0+$/, '')
+  }
+
+  return parseFloat(precise).toString()
 }
 
 export type UpsertPriceParams = Omit<NewPrice, 'id' | 'fetchedAt' | 'price'> & {

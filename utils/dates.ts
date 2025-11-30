@@ -6,6 +6,7 @@ export const isValidDate = (dateString: string): boolean => {
   }
 
   const date = new Date(dateString)
+
   return !Number.isNaN(date.getTime())
 }
 

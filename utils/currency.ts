@@ -6,7 +6,7 @@ export const isCurrencyCode = (value: string): boolean => {
   return /^[A-Z]{3}$/i.test(value)
 }
 
-const findRate = async (from: string, to: string, date: string) => {
+export const findRate = async (from: string, to: string, date: string) => {
   // Try exact match first.
   let rate = await db.query.rates.findFirst({
     where: and(eq(rates.fromCurrency, from), eq(rates.toCurrency, to), eq(rates.date, date)),

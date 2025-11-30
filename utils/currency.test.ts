@@ -1,0 +1,88 @@
+import { beforeEach, describe, expect, it, mock, spyOn } from 'bun:test'
+import type { Rate } from '../types/schemas.ts'
+import * as currency from './currency.ts'
+import { convertPrice, isCurrencyCode } from './currency.ts'
+
+describe('isCurrencyCode', () => {
+  it('should return true for valid 3-letter currency codes', () => {
+    expect(isCurrencyCode('USD')).toBe(true)
+    expect(isCurrencyCode('EUR')).toBe(true)
+    expect(isCurrencyCode('PLN')).toBe(true)
+    expect(isCurrencyCode('GBP')).toBe(true)
+  })
+
+  it('should return true for lowercase codes', () => {
+    expect(isCurrencyCode('usd')).toBe(true)
+    expect(isCurrencyCode('eur')).toBe(true)
+  })
+
+  it('should return true for mixed case codes', () => {
+    expect(isCurrencyCode('Usd')).toBe(true)
+    expect(isCurrencyCode('pLn')).toBe(true)
+  })
+
+  it('should return false for codes with wrong length', () => {
+    expect(isCurrencyCode('US')).toBe(false)
+    expect(isCurrencyCode('USDD')).toBe(false)
+    expect(isCurrencyCode('')).toBe(false)
+  })
+
+  it('should return false for codes with numbers', () => {
+    expect(isCurrencyCode('US1')).toBe(false)
+    expect(isCurrencyCode('123')).toBe(false)
+  })
+
+  it('should return false for codes with special characters', () => {
+    expect(isCurrencyCode('US$')).toBe(false)
+    expect(isCurrencyCode('U-D')).toBe(false)
+  })
+})
+
+describe('convertPrice', () => {
+  const mockRates = (ratesMap: Record<string, string>) => {
+    spyOn(currency, 'findRate').mockImplementation(async (from, to) => {
+      const rate = ratesMap[`${from}-${to}`]
+      return rate ? ({ rate } as Rate) : undefined
+    })
+  }
+
+  beforeEach(() => mock.restore())
+
+  it('should return same price when currencies are equal', async () => {
+    const value = await convertPrice(100, 'USD', 'USD', '2024-01-15')
+
+    expect(value).toBe(100)
+  })
+
+  it('should convert using direct rate', async () => {
+    mockRates({ 'USD-PLN': '4.5' })
+
+    const value = await convertPrice(100, 'USD', 'PLN', '2024-01-15')
+
+    expect(value).toBe(450)
+  })
+
+  it('should convert using inverse rate when direct not found', async () => {
+    mockRates({ 'PLN-USD': '0.25' })
+
+    const value = await convertPrice(100, 'USD', 'PLN', '2024-01-15')
+
+    expect(value).toBe(400)
+  })
+
+  it('should convert through USD intermediate when no direct/inverse rate', async () => {
+    mockRates({ 'EUR-USD': '1.1', 'USD-PLN': '4.0' })
+
+    const value = await convertPrice(100, 'EUR', 'PLN', '2024-01-15')
+
+    expect(value).toBeCloseTo(440)
+  })
+
+  it('should return undefined when no conversion path found', async () => {
+    mockRates({})
+
+    const value = await convertPrice(100, 'USD', 'PLN', '2024-01-15')
+
+    expect(value).toBeUndefined()
+  })
+})
