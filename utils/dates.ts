@@ -9,6 +9,11 @@ export const isValidDate = (dateString: string): boolean => {
   return !Number.isNaN(date.getTime())
 }
 
+export const formatDate = (date: Date | number): string => {
+  const d = typeof date === 'number' ? new Date(date) : date
+  return d.toISOString().split('T')[0]
+}
+
 export const getToday = (): string => {
-  return new Date().toISOString().split('T')[0]
+  return formatDate(new Date())
 }

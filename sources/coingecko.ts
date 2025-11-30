@@ -1,4 +1,5 @@
 import type { PriceData, PriceFetcher } from '../types/sources.ts'
+import { formatDate } from '../utils/dates.ts'
 import { fetchUrl } from '../utils/fetch.ts'
 
 type CoinGeckoSimplePrice = {
@@ -21,11 +22,6 @@ export type TopCoin = {
   symbol: string
   name: string
   rank: number
-}
-
-const formatDate = (timestamp: number): string => {
-  const date = new Date(timestamp)
-  return date.toISOString().split('T')[0]
 }
 
 const fetchCoinGeckoEndpoint = async <T>(endpoint: string): Promise<T> => {

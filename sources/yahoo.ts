@@ -1,4 +1,5 @@
 import type { PriceData, PriceFetcher } from '../types/sources.ts'
+import { formatDate } from '../utils/dates.ts'
 import { fetchUrl } from '../utils/fetch.ts'
 
 type YahooResponse = {
@@ -20,71 +21,71 @@ type YahooResponse = {
   }
 }
 
-const formatDate = (timestamp: number): string => {
-  const date = new Date(timestamp * 1000)
-  return date.toISOString().split('T')[0]
-}
-
 const fetchData = async (
   symbol: string,
-  range: string,
-  interval: string,
+  params: {
+    range: string
+    interval: string
+    fromDate?: number
+    toDate?: number
+  },
 ): Promise<YahooResponse | undefined> => {
   try {
-    const endpoint = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=${range}&interval=${interval}`
-    const response = await fetchUrl(endpoint)
-    const data: YahooResponse = await response.json()
+    const searchParams = new URLSearchParams({ interval: params.interval })
 
-    return data
+    if (params.fromDate !== undefined && params.toDate !== undefined) {
+      searchParams.set('period1', params.fromDate.toString())
+      searchParams.set('period2', params.toDate.toString())
+    } else {
+      searchParams.set('range', params.range)
+    }
+
+    const endpoint = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?${searchParams}`
+    const response = await fetchUrl(endpoint)
+
+    return await response.json()
   } catch (error) {
     console.error(`[Yahoo] Fetch error for ${symbol}:`, error)
   }
 }
 
 export const fetchLatest: PriceFetcher['fetchLatest'] = async (symbol) => {
-  const data = await fetchData(symbol, '1d', '1d')
+  const data = await fetchData(symbol, { range: '1d', interval: '1d' })
+  const price = data?.chart?.result?.[0]?.meta?.regularMarketPrice
 
-  if (!data?.chart?.result?.[0]) {
-    return
-  }
-
-  const result = data.chart.result[0]
-  const price = result.meta.regularMarketPrice
-
-  if (price == null) {
+  if (typeof price !== 'number') {
     return
   }
 
   return {
-    date: formatDate(Date.now() / 1000),
+    date: formatDate(Date.now()),
     price,
   }
 }
 
-export const fetchHistorical: PriceFetcher['fetchHistorical'] = async (symbol, fromDate) => {
-  // Use 'max' range to get all available history, or calculate range based on fromDate
-  const range = fromDate ? 'max' : '1y'
-  const data = await fetchData(symbol, range, '1d')
+export const fetchHistorical: PriceFetcher['fetchHistorical'] = async (symbol, from) => {
+  const fromDate = from ? Math.floor(new Date(from).getTime() / 1000) : 0
+  const toDate = Math.floor(Date.now() / 1000)
+  const data = await fetchData(symbol, { range: '1y', interval: '1d', fromDate, toDate })
+  const result = data?.chart?.result?.[0]
 
-  if (!data?.chart?.result?.[0]) {
+  if (!result) {
     return
   }
 
-  const result = data.chart.result[0]
-  const timestamps = result.timestamp || []
-  const closes = result.indicators.quote[0]?.close || []
-  const currency = result.meta.currency
+  const timestamps = result.timestamp ?? []
+  const closes = result.indicators?.quote?.[0]?.close ?? []
+  const currency = result.meta?.currency ?? 'USD'
 
   const prices: Array<PriceData> = []
-  const fromTimestamp = fromDate ? new Date(fromDate).getTime() / 1000 : 0
 
   for (let i = 0; i < timestamps.length; i++) {
     const timestamp = timestamps[i]
     const close = closes[i]
 
-    if (timestamp >= fromTimestamp && close != null) {
+    if (close != null) {
       prices.push({
-        date: formatDate(timestamp),
+        date: formatDate(timestamp * 1000),
         price: close,
       })
     }

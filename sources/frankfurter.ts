@@ -13,6 +13,7 @@ const fetchData = async (
   try {
     const endpoint = `https://api.frankfurter.dev/v1/${path}?base=${baseCurrency.toUpperCase()}`
     const response = await fetchUrl(endpoint)
+
     return await response.json()
   } catch (error) {
     console.error(`[Frankfurter] Fetch error for ${baseCurrency} (${path}):`, error)
