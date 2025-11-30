@@ -4,11 +4,12 @@ import * as serverConstants from './constants/server.ts'
 import { db } from './instances/database.ts'
 import { hono } from './instances/hono.ts'
 
-import './queues/backfill.ts'
+import './queues/coingecko.ts'
 import './queues/currencies.ts'
-import './queues/currency.ts'
-import './queues/ticker.ts'
+import './queues/frankfurter.ts'
+import './queues/sync.ts'
 import './queues/tickers.ts'
+import './queues/yahoo.ts'
 
 await migrate(db, databaseConstants)
 
