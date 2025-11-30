@@ -79,5 +79,5 @@ priceRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
     price = priceConverted
   }
 
-  return context.text(price.toFixed(2))
+  return context.text(price.toString())
 })
