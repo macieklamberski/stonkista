@@ -1,4 +1,4 @@
-import { and, desc, eq } from 'drizzle-orm'
+import { and, desc, eq, lte } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { prices, tickers } from '../database/tables.ts'
 import { db } from '../instances/database.ts'
@@ -50,10 +50,10 @@ priceRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
     where: and(eq(prices.tickerId, ticker.id), eq(prices.date, params.date)),
   })
 
-  // If no exact date match and looking for today, try latest available.
-  if (!priceData && !currencyOrDate) {
+  // If no exact date match, try closest previous date (handles weekends/holidays).
+  if (!priceData) {
     priceData = await db.query.prices.findFirst({
-      where: eq(prices.tickerId, ticker.id),
+      where: and(eq(prices.tickerId, ticker.id), lte(prices.date, params.date)),
       orderBy: [desc(prices.date)],
     })
   }
