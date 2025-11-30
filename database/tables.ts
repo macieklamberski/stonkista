@@ -3,6 +3,7 @@ import {
   date,
   decimal,
   index,
+  integer,
   pgEnum,
   pgTable,
   serial,
@@ -27,14 +28,17 @@ export const tickers = pgTable(
     active: boolean('active').notNull().default(true),
     createdAt: timestamp('created_at').notNull().defaultNow(),
   },
-  (table) => [uniqueIndex('tickers_source_id').on(table.source, table.sourceId)],
+  (table) => [
+    uniqueIndex('tickers_source_id').on(table.source, table.sourceId),
+    index('tickers_symbol').on(table.symbol),
+  ],
 )
 
 export const prices = pgTable(
   'prices',
   {
     id: serial('id').primaryKey(),
-    tickerId: serial('ticker_id')
+    tickerId: integer('ticker_id')
       .notNull()
       .references(() => tickers.id, { onDelete: 'cascade' }),
     date: date('date').notNull(),

@@ -8,6 +8,13 @@
       "when": 1764500750677,
       "tag": "0000_rich_hawkeye",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1764526004659,
+      "tag": "0001_sharp_gauntlet",
+      "breakpoints": true
     }
   ]
 }
