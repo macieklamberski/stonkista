@@ -11,3 +11,6 @@ export type NewPrice = typeof tables.prices.$inferInsert
 
 export type Rate = typeof tables.rates.$inferSelect
 export type NewRate = typeof tables.rates.$inferInsert
+
+export type Currency = typeof tables.currencies.$inferSelect
+export type NewCurrency = typeof tables.currencies.$inferInsert
