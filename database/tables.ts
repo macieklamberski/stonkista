@@ -42,7 +42,7 @@ export const prices = pgTable(
       .notNull()
       .references(() => tickers.id, { onDelete: 'cascade' }),
     date: date('date').notNull(),
-    price: decimal('price', { precision: 20, scale: 8 }),
+    price: decimal('price', { precision: 32, scale: 16 }),
     available: boolean('available').notNull().default(true),
     fetchedAt: timestamp('fetched_at').notNull().defaultNow(),
   },
@@ -71,7 +71,7 @@ export const rates = pgTable(
     toCurrency: varchar('to_currency', { length: 10 })
       .notNull()
       .references(() => currencies.code),
-    rate: decimal('rate', { precision: 20, scale: 10 }).notNull(),
+    rate: decimal('rate', { precision: 32, scale: 16 }).notNull(),
     fetchedAt: timestamp('fetched_at').notNull().defaultNow(),
   },
   (table) => [

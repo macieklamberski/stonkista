@@ -1,0 +1,1 @@
+ALTER TABLE "rates" ALTER COLUMN "rate" SET DATA TYPE numeric(20, 16);

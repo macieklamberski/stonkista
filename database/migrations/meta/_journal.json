@@ -15,6 +15,27 @@
       "when": 1764526004659,
       "tag": "0001_sharp_gauntlet",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1764529229686,
+      "tag": "0002_wide_blonde_phantom",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1764529448250,
+      "tag": "0003_wealthy_night_thrasher",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1764531447043,
+      "tag": "0004_breezy_mentor",
+      "breakpoints": true
     }
   ]
 }
