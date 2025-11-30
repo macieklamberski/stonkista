@@ -97,7 +97,6 @@ export const fetchHistorical: PriceFetcher['fetchHistorical'] = async (symbol, f
 }
 
 export const yahoo: PriceFetcher = {
-  name: 'yahoo',
   fetchLatest,
   fetchHistorical,
 }

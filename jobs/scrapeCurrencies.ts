@@ -1,15 +1,14 @@
 import { db } from '../instances/database.ts'
-import { currencyQueue } from '../queues/currency.ts'
-import { getToday } from '../utils/dates.ts'
+import { frankfurterQueue } from '../queues/frankfurter.ts'
 
 export const scrapeCurrencies = async () => {
-  const today = getToday()
   const allTickers = await db.query.tickers.findMany({ columns: { currency: true } })
   const currencies = [...new Set(allTickers.map((t) => t.currency))]
 
+  // No fromDate = fetch latest rates.
   for (const currency of currencies) {
-    await currencyQueue.add('scrapeCurrency', { baseCurrency: currency, date: today })
+    await frankfurterQueue.add('fetchFrankfurter', { baseCurrency: currency })
   }
 
-  console.log(`[currency] Scheduled ${currencies.length} jobs for ${today}`)
+  console.log(`[scrapeCurrencies] Scheduled ${currencies.length} Frankfurter jobs`)
 }

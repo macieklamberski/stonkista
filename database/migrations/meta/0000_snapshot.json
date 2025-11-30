@@ -1,9 +1,60 @@
 {
-  "id": "727137e6-8140-4ef3-b6eb-1260cf6172ae",
+  "id": "88e338fd-f251-43e7-8c13-14cbc78f69f0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.currencies": {
+      "name": "currencies",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "currencies_code_unique": {
+          "name": "currencies_code_unique",
+          "nullsNotDistinct": false,
+          "columns": ["code"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.prices": {
       "name": "prices",
       "schema": "",
@@ -188,7 +239,26 @@
           "with": {}
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "rates_from_currency_currencies_code_fk": {
+          "name": "rates_from_currency_currencies_code_fk",
+          "tableFrom": "rates",
+          "tableTo": "currencies",
+          "columnsFrom": ["from_currency"],
+          "columnsTo": ["code"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "rates_to_currency_currencies_code_fk": {
+          "name": "rates_to_currency_currencies_code_fk",
+          "tableFrom": "rates",
+          "tableTo": "currencies",
+          "columnsFrom": ["to_currency"],
+          "columnsTo": ["code"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -207,7 +277,7 @@
         },
         "symbol": {
           "name": "symbol",
-          "type": "varchar(20)",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
@@ -237,6 +307,19 @@
           "primaryKey": false,
           "notNull": true
         },
+        "source_id": {
+          "name": "source_id",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -246,11 +329,17 @@
         }
       },
       "indexes": {
-        "tickers_symbol": {
-          "name": "tickers_symbol",
+        "tickers_source_id": {
+          "name": "tickers_source_id",
           "columns": [
             {
-              "expression": "symbol",
+              "expression": "source",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "source_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"

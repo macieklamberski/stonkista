@@ -9,7 +9,6 @@ export type HistoricalPriceData = {
 }
 
 export type PriceFetcher = {
-  name: string
   fetchLatest: (symbol: string) => Promise<PriceData | undefined>
   fetchHistorical: (symbol: string, fromDate?: string) => Promise<HistoricalPriceData | undefined>
 }
@@ -20,7 +19,6 @@ export type CurrencyRateData = {
 }
 
 export type CurrencyFetcher = {
-  name: string
   fetchLatest: (baseCurrency: string) => Promise<CurrencyRateData | undefined>
   fetchHistorical: (baseCurrency: string, date: string) => Promise<CurrencyRateData | undefined>
 }

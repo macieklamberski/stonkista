@@ -1,4 +1,7 @@
-export const fetchUrl = async (url: string | URL, init?: RequestInit): Promise<Response> => {
+export const fetchUrl = async (
+  url: string | URL,
+  init?: RequestInit & { proxy?: string },
+): Promise<Response> => {
   const response = await fetch(url, init)
 
   if (!response.ok) {

@@ -3,17 +3,94 @@ import type { NewTicker } from '../types/schemas.ts'
 import { tables } from './tables.ts'
 
 const tickers: Array<NewTicker> = [
-  { symbol: 'AAPL', name: 'Apple', type: 'stock', currency: 'USD', source: 'yahoo' },
-  { symbol: 'MSFT', name: 'Microsoft', type: 'stock', currency: 'USD', source: 'yahoo' },
-  { symbol: 'GOOGL', name: 'Alphabet', type: 'stock', currency: 'USD', source: 'yahoo' },
-  { symbol: 'TSLA', name: 'Tesla', type: 'stock', currency: 'USD', source: 'yahoo' },
-  { symbol: 'NVDA', name: 'NVIDIA', type: 'stock', currency: 'USD', source: 'yahoo' },
-  { symbol: 'CCO.TO', name: 'Cameco', type: 'stock', currency: 'CAD', source: 'yahoo' },
-  { symbol: 'BTC', name: 'Bitcoin', type: 'crypto', currency: 'USD', source: 'coingecko' },
-  { symbol: 'ETH', name: 'Ethereum', type: 'crypto', currency: 'USD', source: 'coingecko' },
-  { symbol: 'SOL', name: 'Solana', type: 'crypto', currency: 'USD', source: 'coingecko' },
-  { symbol: 'SPY', name: 'S&P 500 ETF', type: 'etf', currency: 'USD', source: 'yahoo' },
-  { symbol: 'QQQ', name: 'QQQ Trust', type: 'etf', currency: 'USD', source: 'yahoo' },
+  {
+    symbol: 'AAPL',
+    name: 'Apple',
+    type: 'stock',
+    currency: 'USD',
+    source: 'yahoo',
+    sourceId: 'AAPL',
+  },
+  {
+    symbol: 'MSFT',
+    name: 'Microsoft',
+    type: 'stock',
+    currency: 'USD',
+    source: 'yahoo',
+    sourceId: 'MSFT',
+  },
+  {
+    symbol: 'GOOGL',
+    name: 'Alphabet',
+    type: 'stock',
+    currency: 'USD',
+    source: 'yahoo',
+    sourceId: 'GOOGL',
+  },
+  {
+    symbol: 'TSLA',
+    name: 'Tesla',
+    type: 'stock',
+    currency: 'USD',
+    source: 'yahoo',
+    sourceId: 'TSLA',
+  },
+  {
+    symbol: 'NVDA',
+    name: 'NVIDIA',
+    type: 'stock',
+    currency: 'USD',
+    source: 'yahoo',
+    sourceId: 'NVDA',
+  },
+  {
+    symbol: 'CCO.TO',
+    name: 'Cameco',
+    type: 'stock',
+    currency: 'CAD',
+    source: 'yahoo',
+    sourceId: 'CCO.TO',
+  },
+  {
+    symbol: 'BTC',
+    name: 'Bitcoin',
+    type: 'crypto',
+    currency: 'USD',
+    source: 'coingecko',
+    sourceId: 'bitcoin',
+  },
+  {
+    symbol: 'ETH',
+    name: 'Ethereum',
+    type: 'crypto',
+    currency: 'USD',
+    source: 'coingecko',
+    sourceId: 'ethereum',
+  },
+  {
+    symbol: 'SOL',
+    name: 'Solana',
+    type: 'crypto',
+    currency: 'USD',
+    source: 'coingecko',
+    sourceId: 'solana',
+  },
+  {
+    symbol: 'SPY',
+    name: 'S&P 500 ETF',
+    type: 'etf',
+    currency: 'USD',
+    source: 'yahoo',
+    sourceId: 'SPY',
+  },
+  {
+    symbol: 'QQQ',
+    name: 'QQQ Trust',
+    type: 'etf',
+    currency: 'USD',
+    source: 'yahoo',
+    sourceId: 'QQQ',
+  },
 ]
 
 const prices: Record<string, number> = {
@@ -55,6 +132,7 @@ const seed = async () => {
         type: ticker.type,
         currency: ticker.currency ?? 'USD',
         source: ticker.source ?? 'yahoo',
+        sourceId: ticker.sourceId,
       })
       .onConflictDoNothing()
   }
