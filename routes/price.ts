@@ -4,6 +4,7 @@ import { prices, tickers } from '../database/tables.ts'
 import { db } from '../instances/database.ts'
 import { convertPrice, isCurrencyCode } from '../utils/currency.ts'
 import { getToday, isValidDate } from '../utils/dates.ts'
+import { formatPrice } from '../utils/prices.ts'
 
 export const priceRoutes = new Hono()
 
@@ -79,5 +80,5 @@ priceRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
     price = priceConverted
   }
 
-  return context.text(price.toString())
+  return context.text(formatPrice(price))
 })

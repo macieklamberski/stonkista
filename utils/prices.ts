@@ -2,6 +2,11 @@ import { prices } from '../database/tables.ts'
 import { db } from '../instances/database.ts'
 import type { NewPrice } from '../types/schemas.ts'
 
+// Format price with dynamic precision, stripping trailing zeros.
+export const formatPrice = (price: number) => {
+  return price.toFixed(16).replace(/\.?0+$/, '')
+}
+
 export type UpsertPriceParams = Omit<NewPrice, 'id' | 'fetchedAt' | 'price'> & {
   price: number | null
 }
