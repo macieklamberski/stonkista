@@ -16,7 +16,6 @@ export const syncQueue = createQueue(
       },
     },
     worker: {
-      concurrency: 1,
       lockDuration: 1200000, // 20 min for sync job.
     },
   },

@@ -14,8 +14,5 @@ export const coingeckoQueue = createQueue(
         },
       },
     },
-    worker: {
-      concurrency: 1, // Sequential to avoid rate limits.
-    },
   },
 )
