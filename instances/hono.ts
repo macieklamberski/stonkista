@@ -8,6 +8,5 @@ export const hono = new Hono()
 hono.get('/', (context) =>
   context.redirect('https://github.com/macieklamberski/stonkista/blob/main/README.md'),
 )
-hono.get('/health', (context) => context.text('ok'))
 hono.route(basePath, bullboardRoutes)
 hono.route('/', priceRoutes)
