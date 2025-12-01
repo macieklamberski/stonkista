@@ -28,7 +28,8 @@ https://stonkista.com/AAPL/2024-01-15
 https://stonkista.com/AAPL/EUR/2024-01-15
 ```
 
-> **Note:** Use [Yahoo Finance](https://finance.yahoo.com) ticker symbols (e.g., `AAPL`, `MSFT`, `GC=F` for gold futures).
+> [!NOTE]
+> Use [Yahoo Finance](https://finance.yahoo.com) ticker symbols (e.g., `AAPL`, `MSFT`, `GC=F` for gold futures).
 
 ### Cryptocurrencies
 
@@ -56,7 +57,8 @@ https://stonkista.com/forex/USD/PLN
 https://stonkista.com/forex/USD/PLN/2024-01-15
 ```
 
-> **Note:** Exchange rates are sourced from ECB which only provides EUR-based rates. Conversions between non-EUR currencies (e.g., USD to PLN) are calculated using EUR as an intermediate.
+> [!NOTE]
+> Exchange rates are sourced from ECB which only provides EUR-based rates. Conversions between non-EUR currencies (e.g., USD to PLN) are calculated using EUR as an intermediate.
 
 ### Google Sheets
 
