@@ -3,7 +3,9 @@ import { basicAuth } from 'hono/basic-auth'
 import { trimTrailingSlash } from 'hono/trailing-slash'
 import { basePath, password, username } from '../constants/bullboard.ts'
 import { routeHandler as bullboardRoutes } from '../instances/bullboard.ts'
-import { priceRoutes } from '../routes/price.ts'
+import { cryptoRoutes } from '../routes/crypto.ts'
+import { equitiesRoutes } from '../routes/equities.ts'
+import { forexRoutes } from '../routes/forex.ts'
 
 export const hono = new Hono()
 
@@ -16,4 +18,6 @@ hono.get('/', (context) =>
 hono.use(`${basePath}/*`, basicAuth({ username, password }))
 hono.route(basePath, bullboardRoutes)
 
-hono.route('/', priceRoutes)
+hono.route('/forex', forexRoutes)
+hono.route('/crypto', cryptoRoutes)
+hono.route('/', equitiesRoutes)
