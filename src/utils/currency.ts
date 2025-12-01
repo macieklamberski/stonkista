@@ -50,13 +50,13 @@ export const convertPrice = async (
     return price / Number(inverseRate.rate)
   }
 
-  // Try conversion through USD as intermediate.
-  if (from !== 'USD' && to !== 'USD') {
-    const fromToUsd = await findRate(from, 'USD', date)
-    const usdToTarget = await findRate('USD', to, date)
+  // Try conversion through EUR as intermediate as only EUR rates are tracked.
+  if (from !== 'EUR' && to !== 'EUR') {
+    const fromToEur = await findRate('EUR', from, date)
+    const eurToTarget = await findRate('EUR', to, date)
 
-    if (fromToUsd && usdToTarget) {
-      return price * Number(fromToUsd.rate) * Number(usdToTarget.rate)
+    if (fromToEur && eurToTarget) {
+      return (price / Number(fromToEur.rate)) * Number(eurToTarget.rate)
     }
   }
 }
