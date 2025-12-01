@@ -12,35 +12,69 @@ Simple API to get current and historical price data for stocks, cryptocurrencies
 
 ## Usage
 
-Use the direct URLs to get the prices:
+### Stocks, ETFs, Commodities
+
+```bash
+# Current price of Apple stock
+https://stonkista.com/AAPL
+
+# Converted to EUR
+https://stonkista.com/AAPL/EUR
+
+# Price on a specific date
+https://stonkista.com/AAPL/2024-01-15
+
+# Price on a specific date converted to EUR
+https://stonkista.com/AAPL/EUR/2024-01-15
+```
+
+### Cryptocurrencies
 
 ```bash
 # Current price of Bitcoin
-https://stonkista.com/BTC
+https://stonkista.com/crypto/BTC
 
-# Current price of Bitcoin converted to EUR
-https://stonkista.com/BTC/EUR
+# Converted to PLN
+https://stonkista.com/crypto/BTC/PLN
 
-# Price of Bitcoin on a specific date
-https://stonkista.com/BTC/2024-01-15
+# Price on a specific date
+https://stonkista.com/crypto/BTC/2024-01-15
 
-# Price of Bitcoin on a specific date converted to EUR
-https://stonkista.com/BTC/EUR/2024-01-15
+# Price on a specific date converted to PLN
+https://stonkista.com/crypto/BTC/PLN/2024-01-15
 ```
+
+### Forex (Currency Exchange Rates)
+
+```bash
+# Current USD to PLN rate
+https://stonkista.com/forex/USD/PLN
+
+# Rate on a specific date
+https://stonkista.com/forex/USD/PLN/2024-01-15
+```
+
+> **Note:** Exchange rates are sourced from ECB which only provides EUR-based rates. Conversions between non-EUR currencies (e.g., USD to PLN) are calculated using EUR as an intermediate.
 
 ### Google Sheets
 
 Use `IMPORTDATA` function to fetch prices into your spreadsheet:
 
 ```bash
-# Current price
+# Current stock price
 =IMPORTDATA("https://stonkista.com/AAPL")
 
-# Converted to EUR
+# Stock converted to EUR
 =IMPORTDATA("https://stonkista.com/AAPL/EUR")
 
+# Current crypto price
+=IMPORTDATA("https://stonkista.com/crypto/BTC/PLN")
+
+# Forex rate
+=IMPORTDATA("https://stonkista.com/forex/USD/PLN")
+
 # Historical with date from cell
-=IMPORTDATA("https://stonkista.com/BTC/PLN/" & TEXT(A1, "YYYY-MM-DD"))
+=IMPORTDATA("https://stonkista.com/crypto/BTC/PLN/" & TEXT(A1, "YYYY-MM-DD"))
 ```
 
 ### Microsoft Excel
@@ -48,14 +82,20 @@ Use `IMPORTDATA` function to fetch prices into your spreadsheet:
 Use `WEBSERVICE` function wrapped in `NUMBERVALUE` to fetch prices into your spreadsheet:
 
 ```bash
-# Current price
+# Current stock price
 =NUMBERVALUE(WEBSERVICE("https://stonkista.com/AAPL"))
 
-# Converted to EUR
+# Stock converted to EUR
 =NUMBERVALUE(WEBSERVICE("https://stonkista.com/AAPL/EUR"))
 
+# Current crypto price
+=NUMBERVALUE(WEBSERVICE("https://stonkista.com/crypto/BTC/PLN"))
+
+# Forex rate
+=NUMBERVALUE(WEBSERVICE("https://stonkista.com/forex/USD/PLN"))
+
 # Historical with date from cell
-=NUMBERVALUE(WEBSERVICE("https://stonkista.com/BTC/PLN/" & TEXT(A1, "YYYY-MM-DD")))
+=NUMBERVALUE(WEBSERVICE("https://stonkista.com/crypto/BTC/PLN/" & TEXT(A1, "YYYY-MM-DD")))
 ```
 
 ## Data Sources
