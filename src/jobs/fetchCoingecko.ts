@@ -1,7 +1,7 @@
 import { eq, inArray } from 'drizzle-orm'
 import { prices, tickers } from '../database/tables.ts'
 import { db } from '../instances/database.ts'
-import { coingecko, fetchLatestBatch } from '../sources/coingecko.ts'
+import { fetchHistorical, fetchLatestBatch } from '../sources/coingecko.ts'
 import { getToday } from '../utils/dates.ts'
 import { upsertPrice } from '../utils/prices.ts'
 
@@ -54,7 +54,7 @@ export const fetchCoingecko = async (data: FetchCoingeckoData) => {
   let totalInserted = 0
 
   for (const ticker of tickerList) {
-    const historicalData = await coingecko.fetchHistorical(ticker.sourceId, data.fromDate)
+    const historicalData = await fetchHistorical(ticker.sourceId, data.fromDate)
 
     if (!historicalData || historicalData.prices.length === 0) {
       console.error(`[fetchCoingecko] No historical data for ${ticker.symbol}`)

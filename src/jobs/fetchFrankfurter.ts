@@ -1,7 +1,7 @@
 import { and, eq } from 'drizzle-orm'
 import { rates } from '../database/tables.ts'
 import { db } from '../instances/database.ts'
-import { frankfurter } from '../sources/frankfurter.ts'
+import { fetchHistorical, fetchLatest } from '../sources/frankfurter.ts'
 import { getToday } from '../utils/dates.ts'
 
 export type FetchFrankfurterData = {
@@ -14,8 +14,8 @@ export const fetchFrankfurter = async (data: FetchFrankfurterData) => {
   // Pass 'latest' for today, or specific date for historical.
   const date = data.fromDate ?? getToday()
   const rateData = data.fromDate
-    ? await frankfurter.fetchHistorical(data.baseCurrency, data.fromDate)
-    : await frankfurter.fetchLatest(data.baseCurrency)
+    ? await fetchHistorical(data.baseCurrency, data.fromDate)
+    : await fetchLatest(data.baseCurrency)
 
   if (!rateData) {
     console.error(`[fetchFrankfurter] Failed to fetch rates for ${data.baseCurrency} on ${date}`)

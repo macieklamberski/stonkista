@@ -1,4 +1,4 @@
-import type { PriceData, PriceFetcher } from '../types/sources.ts'
+import type { PriceData, PriceHistoricalFetcher, PriceLatestFetcher } from '../types/sources.ts'
 import { formatDate } from '../utils/dates.ts'
 import { fetchUrl } from '../utils/fetch.ts'
 
@@ -24,7 +24,7 @@ export type TopCoin = {
   rank: number
 }
 
-const fetchCoinGeckoEndpoint = async <T>(endpoint: string): Promise<T> => {
+const fetchCoinGeckoUrl = async <T>(endpoint: string): Promise<T> => {
   const url = `https://api.coingecko.com/api/v3/${endpoint}`
   const apiKey = process.env.COINGECKO_API_KEY
   const response = await fetchUrl(url, {
@@ -35,10 +35,10 @@ const fetchCoinGeckoEndpoint = async <T>(endpoint: string): Promise<T> => {
   return (await response.json()) as T
 }
 
-export const fetchLatest: PriceFetcher['fetchLatest'] = async (sourceId) => {
+export const fetchLatest: PriceLatestFetcher = async (sourceId) => {
   try {
     const endpoint = `simple/price?ids=${sourceId}&vs_currencies=usd`
-    const response = await fetchCoinGeckoEndpoint<CoinGeckoSimplePrice>(endpoint)
+    const response = await fetchCoinGeckoUrl<CoinGeckoSimplePrice>(endpoint)
     const price = response[sourceId]?.usd
 
     if (typeof price !== 'number') {
@@ -64,7 +64,7 @@ export const fetchLatestBatch = async (
   try {
     const ids = sourceIds.join(',')
     const endpoint = `simple/price?ids=${ids}&vs_currencies=usd`
-    const response = await fetchCoinGeckoEndpoint<CoinGeckoSimplePrice>(endpoint)
+    const response = await fetchCoinGeckoUrl<CoinGeckoSimplePrice>(endpoint)
     const date = formatDate(Date.now())
 
     const result = new Map<string, PriceData>()
@@ -84,12 +84,12 @@ export const fetchLatestBatch = async (
   }
 }
 
-export const fetchHistorical: PriceFetcher['fetchHistorical'] = async (sourceId, fromDate) => {
+export const fetchHistorical: PriceHistoricalFetcher = async (sourceId, fromDate) => {
   try {
     // CoinGecko free API: max 365 days, use 'max' for full history with API key.
     const days = fromDate ? 'max' : '365'
     const endpoint = `coins/${sourceId}/market_chart?vs_currency=usd&days=${days}&interval=daily`
-    const response = await fetchCoinGeckoEndpoint<CoinGeckoMarketChart>(endpoint)
+    const response = await fetchCoinGeckoUrl<CoinGeckoMarketChart>(endpoint)
     const fromTimestamp = fromDate ? new Date(fromDate).getTime() : 0
 
     const prices: Array<PriceData> = []
@@ -114,7 +114,7 @@ export const fetchTopCoins = async (limit: number = 5000): Promise<Array<TopCoin
   for (let page = 1; page <= totalPages; page++) {
     try {
       const endpoint = `coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${perPage}&page=${page}`
-      const response = await fetchCoinGeckoEndpoint<Array<CoinGeckoMarketCoin>>(endpoint)
+      const response = await fetchCoinGeckoUrl<Array<CoinGeckoMarketCoin>>(endpoint)
 
       for (const coin of response) {
         if (coin.market_cap_rank != null && coins.length < limit) {
@@ -140,9 +140,4 @@ export const fetchTopCoins = async (limit: number = 5000): Promise<Array<TopCoin
   }
 
   return coins
-}
-
-export const coingecko: PriceFetcher = {
-  fetchLatest,
-  fetchHistorical,
 }

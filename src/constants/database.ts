@@ -5,7 +5,7 @@ export const user = process.env.DATABASE_USER
 export const password = process.env.DATABASE_PASS
 
 export const dialect = 'postgresql'
-export const schema = 'database/tables.ts'
+export const schema = 'src/database/tables.ts'
 export const migrationsSchema = 'public'
 export const migrationsTable = 'migrations'
-export const migrationsFolder = 'database/migrations'
+export const migrationsFolder = 'src/database/migrations'

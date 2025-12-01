@@ -63,11 +63,10 @@ priceRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
     return context.notFound()
   }
 
-  let price = Number(priceData.price)
-
+  // Currency conversion needed - must convert to Number (some precision loss for large values).
   if (params.currency && params.currency !== ticker.currency) {
     const priceConverted = await convertPrice(
-      price,
+      Number(priceData.price),
       ticker.currency,
       params.currency,
       priceData.date,
@@ -77,8 +76,9 @@ priceRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
       return context.notFound()
     }
 
-    price = priceConverted
+    return context.text(formatPrice(priceConverted))
   }
 
-  return context.text(formatPrice(price))
+  // No conversion - keep DB string for full precision.
+  return context.text(formatPrice(priceData.price))
 })

@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm'
 import { prices, tickers } from '../database/tables.ts'
 import { db } from '../instances/database.ts'
-import { yahoo } from '../sources/yahoo.ts'
+import { fetchHistorical, fetchLatest } from '../sources/yahoo.ts'
 import { getToday } from '../utils/dates.ts'
 import { upsertPrice } from '../utils/prices.ts'
 
@@ -22,7 +22,7 @@ export const fetchYahoo = async (data: FetchYahooData) => {
 
   // No fromDate = fetch latest (today).
   if (!data.fromDate) {
-    const priceData = await yahoo.fetchLatest(ticker.symbol)
+    const priceData = await fetchLatest(ticker.symbol)
 
     await upsertPrice({
       tickerId: ticker.id,
@@ -41,7 +41,7 @@ export const fetchYahoo = async (data: FetchYahooData) => {
   }
 
   // With fromDate = fetch historical.
-  const historicalData = await yahoo.fetchHistorical(ticker.symbol, data.fromDate)
+  const historicalData = await fetchHistorical(ticker.symbol, data.fromDate)
 
   if (!historicalData || historicalData.prices.length === 0) {
     console.error(`[fetchYahoo] No historical data for ${ticker.symbol}`)

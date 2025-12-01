@@ -4,12 +4,12 @@
   "type": "module",
   "scripts": {
     "prepare": "lefthook install",
-    "dev": "bun --watch index.ts",
-    "start": "bun index.ts",
-    "db:push": "drizzle-kit push",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:seed": "bun database/seeds.ts"
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts",
+    "db:push": "drizzle-kit push --config src/database/config.ts",
+    "db:generate": "drizzle-kit generate --config src/database/config.ts",
+    "db:migrate": "drizzle-kit migrate --config src/database/config.ts",
+    "db:seed": "bun src/database/seeds.ts"
   },
   "dependencies": {
     "@bull-board/api": "^6.14.2",

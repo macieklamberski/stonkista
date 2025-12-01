@@ -1,4 +1,4 @@
-import type { PriceData, PriceFetcher } from '../types/sources.ts'
+import type { PriceData, PriceHistoricalFetcher, PriceLatestFetcher } from '../types/sources.ts'
 import { formatDate } from '../utils/dates.ts'
 import { fetchUrl } from '../utils/fetch.ts'
 
@@ -49,7 +49,7 @@ const fetchData = async (
   }
 }
 
-export const fetchLatest: PriceFetcher['fetchLatest'] = async (symbol) => {
+export const fetchLatest: PriceLatestFetcher = async (symbol) => {
   const data = await fetchData(symbol, { range: '1d', interval: '1d' })
   const price = data?.chart?.result?.[0]?.meta?.regularMarketPrice
 
@@ -63,7 +63,7 @@ export const fetchLatest: PriceFetcher['fetchLatest'] = async (symbol) => {
   }
 }
 
-export const fetchHistorical: PriceFetcher['fetchHistorical'] = async (symbol, from) => {
+export const fetchHistorical: PriceHistoricalFetcher = async (symbol, from) => {
   const fromDate = from ? Math.floor(new Date(from).getTime() / 1000) : 0
   const toDate = Math.floor(Date.now() / 1000)
   const data = await fetchData(symbol, { range: '1y', interval: '1d', fromDate, toDate })
@@ -95,9 +95,4 @@ export const fetchHistorical: PriceFetcher['fetchHistorical'] = async (symbol, f
     prices,
     currency,
   }
-}
-
-export const yahoo: PriceFetcher = {
-  fetchLatest,
-  fetchHistorical,
 }

@@ -1,4 +1,8 @@
-import type { CurrencyFetcher, CurrencyRateData } from '../types/sources.ts'
+import type {
+  CurrencyHistoricalFetcher,
+  CurrencyLatestFetcher,
+  CurrencyRateData,
+} from '../types/sources.ts'
 import { fetchUrl } from '../utils/fetch.ts'
 
 export type Currency = {
@@ -33,7 +37,10 @@ export const fetchCurrencies = async (): Promise<Array<Currency>> => {
   }
 }
 
-export const frankfurter: CurrencyFetcher = {
-  fetchLatest: (baseCurrency) => fetchData('latest', baseCurrency),
-  fetchHistorical: (baseCurrency, date) => fetchData(date, baseCurrency),
+export const fetchLatest: CurrencyLatestFetcher = (baseCurrency) => {
+  return fetchData('latest', baseCurrency)
+}
+
+export const fetchHistorical: CurrencyHistoricalFetcher = (baseCurrency, date) => {
+  return fetchData(date, baseCurrency)
 }
