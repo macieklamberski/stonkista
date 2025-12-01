@@ -1,3 +1,4 @@
+import { apiKey, proxy } from '../constants/coingecko.ts'
 import type { PriceData, PriceHistoricalFetcher, PriceLatestFetcher } from '../types/sources.ts'
 import { formatDate } from '../utils/dates.ts'
 import { fetchUrl } from '../utils/fetch.ts'
@@ -26,9 +27,8 @@ export type TopCoin = {
 
 const fetchCoinGeckoUrl = async <T>(endpoint: string): Promise<T> => {
   const url = `https://api.coingecko.com/api/v3/${endpoint}`
-  const apiKey = process.env.COINGECKO_API_KEY
   const response = await fetchUrl(url, {
-    proxy: process.env.COINGECKO_PROXY,
+    proxy,
     headers: apiKey ? { 'x-cg-demo-api-key': apiKey } : {},
   })
 
