@@ -37,6 +37,7 @@ const parseParams = (currencyOrDate?: string, date?: string) => {
 // GET /:ticker/:currency/:date
 priceRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
   const { ticker: symbol, currencyOrDate, date } = context.req.param()
+  const locale = context.req.query('locale')
 
   const params = parseParams(currencyOrDate, date)
   const ticker = await db.query.tickers.findFirst({
@@ -76,9 +77,9 @@ priceRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
       return context.notFound()
     }
 
-    return context.text(formatPrice(priceConverted))
+    return context.text(formatPrice(priceConverted, locale))
   }
 
   // No conversion - keep DB string for full precision.
-  return context.text(formatPrice(priceData.price))
+  return context.text(formatPrice(priceData.price, locale))
 })
