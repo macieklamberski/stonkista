@@ -28,6 +28,8 @@ https://stonkista.com/AAPL/2024-01-15
 https://stonkista.com/AAPL/EUR/2024-01-15
 ```
 
+> **Note:** Use [Yahoo Finance](https://finance.yahoo.com) ticker symbols (e.g., `AAPL`, `MSFT`, `GC=F` for gold futures).
+
 ### Cryptocurrencies
 
 ```bash
