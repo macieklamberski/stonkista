@@ -1,3 +1,5 @@
+import type { TickerType } from './schemas.ts'
+
 export type PriceData = {
   date: string // YYYY-MM-DD
   price: number
@@ -6,6 +8,8 @@ export type PriceData = {
 export type HistoricalPriceData = {
   prices: Array<PriceData>
   currency: string
+  name?: string
+  type?: TickerType
 }
 
 export type PriceLatestFetcher = (symbol: string) => Promise<PriceData | undefined>

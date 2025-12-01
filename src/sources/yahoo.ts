@@ -1,3 +1,4 @@
+import type { TickerType } from '../types/schemas.ts'
 import type { PriceData, PriceHistoricalFetcher, PriceLatestFetcher } from '../types/sources.ts'
 import { formatDate } from '../utils/dates.ts'
 import { fetchUrl } from '../utils/fetch.ts'
@@ -9,6 +10,9 @@ type YahooResponse = {
         currency: string
         symbol: string
         regularMarketPrice: number
+        instrumentType?: string
+        longName?: string
+        shortName?: string
       }
       timestamp: Array<number>
       indicators: {
@@ -18,6 +22,19 @@ type YahooResponse = {
       }
     }> | null
     error: { code: string; description: string } | null
+  }
+}
+
+const mapInstrumentType = (instrumentType?: string): TickerType | undefined => {
+  switch (instrumentType?.toLowerCase()) {
+    case 'etf':
+      return 'etf'
+    case 'future':
+      return 'commodity'
+    case 'cryptocurrency':
+      return // Block crypto - use /crypto/ route with CoinGecko instead.
+    default:
+      return 'stock'
   }
 }
 
@@ -75,7 +92,7 @@ export const fetchHistorical: PriceHistoricalFetcher = async (symbol, from) => {
 
   const timestamps = result.timestamp ?? []
   const closes = result.indicators?.quote?.[0]?.close ?? []
-  const currency = result.meta?.currency ?? 'USD'
+  const meta = result.meta
 
   const prices: Array<PriceData> = []
 
@@ -93,6 +110,8 @@ export const fetchHistorical: PriceHistoricalFetcher = async (symbol, from) => {
 
   return {
     prices,
-    currency,
+    currency: meta.currency,
+    name: meta?.longName ?? meta?.shortName,
+    type: mapInstrumentType(meta?.instrumentType),
   }
 }

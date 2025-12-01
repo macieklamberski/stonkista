@@ -2,9 +2,10 @@ import { and, desc, eq, lte, ne } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { prices, tickers } from '../database/tables.ts'
 import { db } from '../instances/database.ts'
+import { fetchHistorical } from '../sources/yahoo.ts'
 import { convertPrice, isCurrencyCode } from '../utils/currency.ts'
 import { getToday, isValidDate } from '../utils/dates.ts'
-import { formatPrice } from '../utils/prices.ts'
+import { formatPrice, upsertPrice } from '../utils/prices.ts'
 
 export const priceRoutes = new Hono()
 
@@ -119,14 +120,46 @@ priceRoutes.get('/crypto/:ticker/:currencyOrDate?/:date?', async (context) => {
 priceRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
   const { ticker: symbol, currencyOrDate, date } = context.req.param()
   const locale = context.req.query('locale')
-
   const params = parseParams(currencyOrDate, date)
-  const ticker = await db.query.tickers.findFirst({
+
+  if (!params) {
+    return context.notFound()
+  }
+
+  let ticker = await db.query.tickers.findFirst({
     where: and(eq(tickers.symbol, symbol.toUpperCase()), ne(tickers.type, 'crypto')),
   })
 
-  if (!ticker || !params) {
-    return context.notFound()
+  // Lazy load from Yahoo if ticker not found.
+  if (!ticker) {
+    const data = await fetchHistorical(symbol)
+
+    if (!data || !data.name || !data.type) {
+      return context.notFound()
+    }
+
+    const [newTicker] = await db
+      .insert(tickers)
+      .values({
+        symbol: symbol.toUpperCase(),
+        name: data.name,
+        type: data.type,
+        currency: data.currency,
+        source: 'yahoo',
+        sourceId: symbol.toUpperCase(),
+      })
+      .returning()
+
+    for (const price of data.prices) {
+      await upsertPrice({
+        tickerId: newTicker.id,
+        date: price.date,
+        price: price.price,
+        available: true,
+      })
+    }
+
+    ticker = newTicker
   }
 
   let priceData = await db.query.prices.findFirst({
