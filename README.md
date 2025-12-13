@@ -1,6 +1,6 @@
 # Stonkista
 
-Simple API to get current and historical price data for stocks, cryptocurrencies, and currencies from Yahoo Finance, CoinGecko, and Frankfurter.
+Minimalist API to get current and historical price data for stocks, cryptocurrencies, and currencies from Yahoo Finance, CoinGecko, and Frankfurter.
 
 **[stonkista.com ↗](https://stonkista.com)**
 &nbsp;&nbsp;·&nbsp;&nbsp;
