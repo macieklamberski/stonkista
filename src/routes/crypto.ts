@@ -63,6 +63,10 @@ cryptoRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
     return context.notFound()
   }
 
+  if (params.date !== getToday()) {
+    context.header('Cache-Control', 'public, max-age=31536000')
+  }
+
   if (params.currency && params.currency !== ticker.currency) {
     const priceConverted = await convertPrice(
       Number(priceData.price),

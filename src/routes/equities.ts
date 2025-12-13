@@ -97,6 +97,10 @@ equitiesRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
     return context.notFound()
   }
 
+  if (params.date !== getToday()) {
+    context.header('Cache-Control', 'public, max-age=31536000')
+  }
+
   // Currency conversion needed - must convert to Number (some precision loss for large values).
   if (params.currency && params.currency !== ticker.currency) {
     const priceConverted = await convertPrice(
