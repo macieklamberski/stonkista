@@ -16,8 +16,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    networks:
-      - default
 
   redis:
     image: redis:8-alpine
@@ -30,8 +28,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    networks:
-      - default
 
   stonkista:
     build:
@@ -52,13 +48,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    networks:
-      - default
-      - dokploy-network
-
-networks:
-  dokploy-network:
-    external: true
 
 volumes:
   postgres_data:
