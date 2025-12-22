@@ -11,4 +11,4 @@ export const client = postgres({
   password: databaseConstants.password,
 })
 
-export const db = drizzle(client, { schema })
+export const db = drizzle({ client, schema })

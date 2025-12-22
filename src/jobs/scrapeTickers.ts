@@ -15,7 +15,7 @@ const chunk = <T>(array: Array<T>, size: number): Array<Array<T>> => {
 }
 
 export const scrapeTickers = async () => {
-  const allTickers = await db.query.tickers.findMany()
+  const allTickers = await db._query.tickers.findMany()
 
   const yahooTickers = allTickers.filter((t) => t.source === 'yahoo')
   const coingeckoTickers = allTickers.filter((t) => t.source === 'coingecko')

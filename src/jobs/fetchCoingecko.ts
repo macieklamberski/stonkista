@@ -11,7 +11,7 @@ export type FetchCoingeckoData = {
 }
 
 export const fetchCoingecko = async (data: FetchCoingeckoData) => {
-  const tickerList = await db.query.tickers.findMany({
+  const tickerList = await db._query.tickers.findMany({
     where: inArray(tickers.id, data.tickerIds),
   })
 
@@ -61,7 +61,7 @@ export const fetchCoingecko = async (data: FetchCoingeckoData) => {
       continue
     }
 
-    const existingPrices = await db.query.prices.findMany({
+    const existingPrices = await db._query.prices.findMany({
       where: eq(prices.tickerId, ticker.id),
       columns: { date: true },
     })

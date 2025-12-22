@@ -16,7 +16,7 @@ export const syncFrankfurter = async () => {
   let updated = 0
 
   for (const currency of currencyList) {
-    const existing = await db.query.currencies.findFirst({
+    const existing = await db._query.currencies.findFirst({
       where: eq(currencies.code, currency.code),
     })
 

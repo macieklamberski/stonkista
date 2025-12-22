@@ -11,7 +11,7 @@ export type FetchYahooData = {
 }
 
 export const fetchYahoo = async (data: FetchYahooData) => {
-  const ticker = await db.query.tickers.findFirst({
+  const ticker = await db._query.tickers.findFirst({
     where: eq(tickers.id, data.tickerId),
   })
 
@@ -48,7 +48,7 @@ export const fetchYahoo = async (data: FetchYahooData) => {
     return
   }
 
-  const existingPrices = await db.query.prices.findMany({
+  const existingPrices = await db._query.prices.findMany({
     where: eq(prices.tickerId, ticker.id),
     columns: { date: true },
   })

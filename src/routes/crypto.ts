@@ -40,7 +40,7 @@ cryptoRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
   const locale = context.req.query('locale')
   const params = parseParams(currencyOrDate, date)
 
-  const ticker = await db.query.tickers.findFirst({
+  const ticker = await db._query.tickers.findFirst({
     where: and(eq(tickers.symbol, symbol.toUpperCase()), eq(tickers.type, 'crypto')),
   })
 
@@ -48,12 +48,12 @@ cryptoRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
     return context.notFound()
   }
 
-  let priceData = await db.query.prices.findFirst({
+  let priceData = await db._query.prices.findFirst({
     where: and(eq(prices.tickerId, ticker.id), eq(prices.date, params.date)),
   })
 
   if (!priceData) {
-    priceData = await db.query.prices.findFirst({
+    priceData = await db._query.prices.findFirst({
       where: and(eq(prices.tickerId, ticker.id), lte(prices.date, params.date)),
       orderBy: [desc(prices.date)],
     })

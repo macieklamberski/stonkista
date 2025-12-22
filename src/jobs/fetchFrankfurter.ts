@@ -25,7 +25,7 @@ export const fetchFrankfurter = async (data: FetchFrankfurterData) => {
   let inserted = 0
 
   for (const [currency, rate] of Object.entries(rateData.rates)) {
-    const existing = await db.query.rates.findFirst({
+    const existing = await db._query.rates.findFirst({
       where: and(
         eq(rates.date, rateData.date),
         eq(rates.fromCurrency, data.baseCurrency.toUpperCase()),

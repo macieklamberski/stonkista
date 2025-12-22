@@ -45,7 +45,7 @@ equitiesRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
     return context.notFound()
   }
 
-  let ticker = await db.query.tickers.findFirst({
+  let ticker = await db._query.tickers.findFirst({
     where: and(eq(tickers.symbol, symbol.toUpperCase()), ne(tickers.type, 'crypto')),
   })
 
@@ -81,13 +81,13 @@ equitiesRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
     ticker = newTicker
   }
 
-  let priceData = await db.query.prices.findFirst({
+  let priceData = await db._query.prices.findFirst({
     where: and(eq(prices.tickerId, ticker.id), eq(prices.date, params.date)),
   })
 
   // If no exact date match, try closest previous date (handles weekends/holidays).
   if (!priceData) {
-    priceData = await db.query.prices.findFirst({
+    priceData = await db._query.prices.findFirst({
       where: and(eq(prices.tickerId, ticker.id), lte(prices.date, params.date)),
       orderBy: [desc(prices.date)],
     })

@@ -17,7 +17,7 @@ export const syncCoingecko = async () => {
   let updated = 0
 
   for (const coin of coins) {
-    const existing = await db.query.tickers.findFirst({
+    const existing = await db._query.tickers.findFirst({
       where: and(eq(tickers.source, 'coingecko'), eq(tickers.sourceId, coin.id)),
     })
 

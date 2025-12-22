@@ -8,13 +8,13 @@ export const isCurrencyCode = (value: string): boolean => {
 
 export const findRate = async (from: string, to: string, date: string) => {
   // Try exact match first.
-  let rate = await db.query.rates.findFirst({
+  let rate = await db._query.rates.findFirst({
     where: and(eq(rates.fromCurrency, from), eq(rates.toCurrency, to), eq(rates.date, date)),
   })
 
   // Fallback to closest previous date (handles weekends/holidays).
   if (!rate) {
-    rate = await db.query.rates.findFirst({
+    rate = await db._query.rates.findFirst({
       where: and(eq(rates.fromCurrency, from), eq(rates.toCurrency, to), lte(rates.date, date)),
       orderBy: [desc(rates.date)],
     })
