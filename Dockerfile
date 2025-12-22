@@ -1,10 +1,14 @@
-FROM oven/bun:1-alpine
-
-WORKDIR /app
+FROM oven/bun:alpine AS builder
+WORKDIR /home/bun
 
 COPY package.json bun.lock ./
-RUN bun install --frozen-lockfile --ignore-scripts
+RUN bun install --frozen-lockfile --ignore-scripts --production
 
-COPY . .
+FROM oven/bun:alpine
+WORKDIR /home/bun
 
-CMD ["bun", "run", "start"]
+COPY --from=builder /home/bun/node_modules node_modules
+COPY package.json .
+COPY src src
+
+CMD ["bun", "run", "src/index.ts"]
