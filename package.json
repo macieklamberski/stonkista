@@ -4,8 +4,7 @@
   "type": "module",
   "scripts": {
     "prepare": "lefthook install",
-    "dev": "bun --watch src/index.ts",
-    "start": "bun src/index.ts",
+    "dev": "docker compose -f .docker/docker-compose.dev.yml --env-file .docker/.env.dev up --watch",
     "db:push": "drizzle-kit push --config src/database/config.ts",
     "db:generate": "drizzle-kit generate --config src/database/config.ts",
     "db:migrate": "drizzle-kit migrate --config src/database/config.ts",

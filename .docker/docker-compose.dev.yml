@@ -1,0 +1,61 @@
+name: stonkista
+
+services:
+  stonkista:
+    image: stonkista:dev
+    build:
+      context: ..
+      dockerfile: .docker/Dockerfile.dev
+    environment:
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASS: ${DATABASE_PASS}
+      QUEUE_HOST: ${QUEUE_HOST}
+      QUEUE_PORT: ${QUEUE_PORT}
+      COINGECKO_API_KEY: ${COINGECKO_API_KEY}
+      COINGECKO_PROXY: ${COINGECKO_PROXY}
+      BULLBOARD_USER: ${BULLBOARD_USER}
+      BULLBOARD_PASS: ${BULLBOARD_PASS}
+    ports:
+      - ${SERVER_PORT}:3000
+    develop:
+      watch:
+        - action: sync
+          path: ..
+          target: /home/bun
+        - action: rebuild
+          path: ../bun.lock
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  postgres:
+    image: postgres:18-alpine
+    ports:
+      - ${DATABASE_PORT}:5432
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASS}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', '${DATABASE_USER}', '-d', '${DATABASE_NAME}']
+      interval: 2s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:8-alpine
+    ports:
+      - ${QUEUE_PORT}:6379
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:

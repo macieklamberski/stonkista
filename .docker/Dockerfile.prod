@@ -8,7 +8,6 @@ FROM oven/bun:alpine
 WORKDIR /home/bun
 
 COPY --from=builder /home/bun/node_modules node_modules
-COPY package.json .
 COPY src src
 
-CMD ["bun", "run", "src/index.ts"]
+CMD ["bun", "src/index.ts"]
