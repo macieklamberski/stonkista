@@ -23,12 +23,11 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    networks:
-      - default
-      - dokploy-network
 
   postgres:
     image: postgres:18-alpine
+    ports:
+      - ${DATABASE_PORT}:5432
     environment:
       POSTGRES_DB: ${DATABASE_NAME}
       POSTGRES_USER: ${DATABASE_USER}
@@ -50,10 +49,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-
-networks:
-  dokploy-network:
-    external: true
 
 volumes:
   postgres_data:
