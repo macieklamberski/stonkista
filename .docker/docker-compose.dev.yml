@@ -3,6 +3,7 @@ name: stonkista
 services:
   stonkista:
     image: stonkista:dev
+    pull_policy: build
     build:
       context: ..
       dockerfile: .docker/Dockerfile.dev
@@ -16,8 +17,6 @@ services:
       QUEUE_PORT: ${QUEUE_PORT}
       COINGECKO_API_KEY: ${COINGECKO_API_KEY}
       COINGECKO_PROXY: ${COINGECKO_PROXY}
-      BULLBOARD_USER: ${BULLBOARD_USER}
-      BULLBOARD_PASS: ${BULLBOARD_PASS}
     ports:
       - ${SERVER_PORT}:3000
     develop:
@@ -55,6 +54,18 @@ services:
       - ${QUEUE_PORT}:6379
     volumes:
       - redis_data:/data
+
+  bullboard:
+    image: venatum/bull-board:latest
+    environment:
+      REDIS_HOST: ${QUEUE_HOST}
+      REDIS_PORT: ${QUEUE_PORT}
+      BULL_PREFIX: bull
+      BULL_VERSION: BULLMQ
+    ports:
+      - ${BULLBOARD_PORT}:3000
+    depends_on:
+      - redis
 
 volumes:
   postgres_data:

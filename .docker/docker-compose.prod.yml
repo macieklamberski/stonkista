@@ -16,8 +16,6 @@ services:
       QUEUE_PORT: ${QUEUE_PORT}
       COINGECKO_API_KEY: ${COINGECKO_API_KEY}
       COINGECKO_PROXY: ${COINGECKO_PROXY}
-      BULLBOARD_USER: ${BULLBOARD_USER}
-      BULLBOARD_PASS: ${BULLBOARD_PASS}
     depends_on:
       postgres:
         condition: service_healthy
@@ -62,6 +60,20 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  bullboard:
+    image: venatum/bull-board:latest
+    environment:
+      REDIS_HOST: ${QUEUE_HOST}
+      REDIS_PORT: ${QUEUE_PORT}
+      BULL_PREFIX: bull
+      BULL_VERSION: BULLMQ
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - default
+      - dokploy-network
 
 networks:
   dokploy-network:
