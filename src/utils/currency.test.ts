@@ -70,12 +70,12 @@ describe('convertPrice', () => {
     expect(value).toBe(400)
   })
 
-  it('should convert through USD intermediate when no direct/inverse rate', async () => {
-    mockRates({ 'EUR-USD': '1.1', 'USD-PLN': '4.0' })
+  it('should convert through EUR intermediate when no direct/inverse rate', async () => {
+    mockRates({ 'EUR-USD': '1.1', 'EUR-PLN': '4.5' })
 
-    const value = await convertPrice(100, 'EUR', 'PLN', '2024-01-15')
+    const value = await convertPrice(100, 'USD', 'PLN', '2024-01-15')
 
-    expect(value).toBeCloseTo(440)
+    expect(value).toBeCloseTo(409.09, 1)
   })
 
   it('should return undefined when no conversion path found', async () => {
