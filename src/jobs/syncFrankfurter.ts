@@ -2,6 +2,7 @@ import { eq, notInArray } from 'drizzle-orm'
 import { currencies } from '../database/tables.ts'
 import { db } from '../instances/database.ts'
 import { fetchCurrencies } from '../sources/frankfurter.ts'
+import { findOrSkip } from '../utils/queries.ts'
 
 export const syncFrankfurter = async () => {
   const currencyList = await fetchCurrencies()
@@ -16,9 +17,9 @@ export const syncFrankfurter = async () => {
   let updated = 0
 
   for (const currency of currencyList) {
-    const existing = await db._query.currencies.findFirst({
-      where: eq(currencies.code, currency.code),
-    })
+    const existing = await findOrSkip(
+      db.select().from(currencies).where(eq(currencies.code, currency.code)).limit(1),
+    )
 
     if (existing) {
       await db

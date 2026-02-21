@@ -11,9 +11,7 @@ export type FetchCoingeckoData = {
 }
 
 export const fetchCoingecko = async (data: FetchCoingeckoData) => {
-  const tickerList = await db._query.tickers.findMany({
-    where: inArray(tickers.id, data.tickerIds),
-  })
+  const tickerList = await db.select().from(tickers).where(inArray(tickers.id, data.tickerIds))
 
   if (tickerList.length === 0) {
     console.error('[fetchCoingecko] No tickers found')
@@ -61,10 +59,10 @@ export const fetchCoingecko = async (data: FetchCoingeckoData) => {
       continue
     }
 
-    const existingPrices = await db._query.prices.findMany({
-      where: eq(prices.tickerId, ticker.id),
-      columns: { date: true },
-    })
+    const existingPrices = await db
+      .select({ date: prices.date })
+      .from(prices)
+      .where(eq(prices.tickerId, ticker.id))
 
     const existingDates = new Set(existingPrices.map((p) => p.date))
 

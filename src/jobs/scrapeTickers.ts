@@ -1,3 +1,4 @@
+import { tickers } from '../database/tables.ts'
 import { db } from '../instances/database.ts'
 import { coingeckoQueue } from '../queues/coingecko.ts'
 import { yahooQueue } from '../queues/yahoo.ts'
@@ -15,7 +16,7 @@ const chunk = <T>(array: Array<T>, size: number): Array<Array<T>> => {
 }
 
 export const scrapeTickers = async () => {
-  const allTickers = await db._query.tickers.findMany()
+  const allTickers = await db.select().from(tickers)
 
   const yahooTickers = allTickers.filter((t) => t.source === 'yahoo')
   const coingeckoTickers = allTickers.filter((t) => t.source === 'coingecko')

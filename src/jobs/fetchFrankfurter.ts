@@ -3,6 +3,7 @@ import { rates } from '../database/tables.ts'
 import { db } from '../instances/database.ts'
 import { fetchHistorical, fetchLatest } from '../sources/frankfurter.ts'
 import { getToday } from '../utils/dates.ts'
+import { findOrSkip } from '../utils/queries.ts'
 
 export type FetchFrankfurterData = {
   baseCurrency: string
@@ -25,13 +26,19 @@ export const fetchFrankfurter = async (data: FetchFrankfurterData) => {
   let inserted = 0
 
   for (const [currency, rate] of Object.entries(rateData.rates)) {
-    const existing = await db._query.rates.findFirst({
-      where: and(
-        eq(rates.date, rateData.date),
-        eq(rates.fromCurrency, data.baseCurrency.toUpperCase()),
-        eq(rates.toCurrency, currency),
-      ),
-    })
+    const existing = await findOrSkip(
+      db
+        .select()
+        .from(rates)
+        .where(
+          and(
+            eq(rates.date, rateData.date),
+            eq(rates.fromCurrency, data.baseCurrency.toUpperCase()),
+            eq(rates.toCurrency, currency),
+          ),
+        )
+        .limit(1),
+    )
 
     if (existing) {
       continue

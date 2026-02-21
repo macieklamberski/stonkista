@@ -1,23 +1,37 @@
 import { and, desc, eq, lte } from 'drizzle-orm'
 import { rates } from '../database/tables.ts'
 import { db } from '../instances/database.ts'
+import type { Rate } from '../types/schemas.ts'
+import { findOrSkip } from './queries.ts'
 
 export const isCurrencyCode = (value: string): boolean => {
   return /^[A-Z]{3}$/i.test(value)
 }
 
-export const findRate = async (from: string, to: string, date: string) => {
+export const findRate = async (
+  from: string,
+  to: string,
+  date: string,
+): Promise<Rate | undefined> => {
   // Try exact match first.
-  let rate = await db._query.rates.findFirst({
-    where: and(eq(rates.fromCurrency, from), eq(rates.toCurrency, to), eq(rates.date, date)),
-  })
+  let rate = await findOrSkip(
+    db
+      .select()
+      .from(rates)
+      .where(and(eq(rates.fromCurrency, from), eq(rates.toCurrency, to), eq(rates.date, date)))
+      .limit(1),
+  )
 
   // Fallback to closest previous date (handles weekends/holidays).
   if (!rate) {
-    rate = await db._query.rates.findFirst({
-      where: and(eq(rates.fromCurrency, from), eq(rates.toCurrency, to), lte(rates.date, date)),
-      orderBy: [desc(rates.date)],
-    })
+    rate = await findOrSkip(
+      db
+        .select()
+        .from(rates)
+        .where(and(eq(rates.fromCurrency, from), eq(rates.toCurrency, to), lte(rates.date, date)))
+        .orderBy(desc(rates.date))
+        .limit(1),
+    )
   }
 
   return rate

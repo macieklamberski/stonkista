@@ -1,8 +1,9 @@
+import { tickers } from '../database/tables.ts'
 import { db } from '../instances/database.ts'
 import { frankfurterQueue } from '../queues/frankfurter.ts'
 
 export const scrapeCurrencies = async () => {
-  const allTickers = await db._query.tickers.findMany({ columns: { currency: true } })
+  const allTickers = await db.select({ currency: tickers.currency }).from(tickers)
   const currencies = [...new Set(allTickers.map((t) => t.currency))]
 
   // No fromDate = fetch latest rates.

@@ -6,6 +6,7 @@ import { fetchHistorical } from '../sources/yahoo.ts'
 import { convertPrice, isCurrencyCode } from '../utils/currency.ts'
 import { getToday, isValidDate } from '../utils/dates.ts'
 import { formatPrice, upsertPrice } from '../utils/prices.ts'
+import { findOrSkip } from '../utils/queries.ts'
 
 export const equitiesRoutes = new Hono()
 
@@ -45,9 +46,13 @@ equitiesRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
     return context.notFound()
   }
 
-  let ticker = await db._query.tickers.findFirst({
-    where: and(eq(tickers.symbol, symbol.toUpperCase()), ne(tickers.type, 'crypto')),
-  })
+  let ticker = await findOrSkip(
+    db
+      .select()
+      .from(tickers)
+      .where(and(eq(tickers.symbol, symbol.toUpperCase()), ne(tickers.type, 'crypto')))
+      .limit(1),
+  )
 
   // Lazy load from Yahoo if ticker not found.
   if (!ticker) {
@@ -81,16 +86,24 @@ equitiesRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
     ticker = newTicker
   }
 
-  let priceData = await db._query.prices.findFirst({
-    where: and(eq(prices.tickerId, ticker.id), eq(prices.date, params.date)),
-  })
+  let priceData = await findOrSkip(
+    db
+      .select()
+      .from(prices)
+      .where(and(eq(prices.tickerId, ticker.id), eq(prices.date, params.date)))
+      .limit(1),
+  )
 
   // If no exact date match, try closest previous date (handles weekends/holidays).
   if (!priceData) {
-    priceData = await db._query.prices.findFirst({
-      where: and(eq(prices.tickerId, ticker.id), lte(prices.date, params.date)),
-      orderBy: [desc(prices.date)],
-    })
+    priceData = await findOrSkip(
+      db
+        .select()
+        .from(prices)
+        .where(and(eq(prices.tickerId, ticker.id), lte(prices.date, params.date)))
+        .orderBy(desc(prices.date))
+        .limit(1),
+    )
   }
 
   if (!priceData || !priceData.available || priceData.price === null) {

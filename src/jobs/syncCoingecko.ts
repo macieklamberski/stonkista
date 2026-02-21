@@ -2,6 +2,7 @@ import { and, eq, notInArray } from 'drizzle-orm'
 import { tickers } from '../database/tables.ts'
 import { db } from '../instances/database.ts'
 import { fetchTopCoins } from '../sources/coingecko.ts'
+import { findOrSkip } from '../utils/queries.ts'
 
 export const syncCoingecko = async () => {
   const limit = 5000
@@ -17,9 +18,13 @@ export const syncCoingecko = async () => {
   let updated = 0
 
   for (const coin of coins) {
-    const existing = await db._query.tickers.findFirst({
-      where: and(eq(tickers.source, 'coingecko'), eq(tickers.sourceId, coin.id)),
-    })
+    const existing = await findOrSkip(
+      db
+        .select()
+        .from(tickers)
+        .where(and(eq(tickers.source, 'coingecko'), eq(tickers.sourceId, coin.id)))
+        .limit(1),
+    )
 
     if (existing) {
       // Update existing ticker.

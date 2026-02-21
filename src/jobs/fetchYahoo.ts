@@ -4,6 +4,7 @@ import { db } from '../instances/database.ts'
 import { fetchHistorical, fetchLatest } from '../sources/yahoo.ts'
 import { getToday } from '../utils/dates.ts'
 import { upsertPrice } from '../utils/prices.ts'
+import { findOrSkip } from '../utils/queries.ts'
 
 export type FetchYahooData = {
   tickerId: number
@@ -11,9 +12,9 @@ export type FetchYahooData = {
 }
 
 export const fetchYahoo = async (data: FetchYahooData) => {
-  const ticker = await db._query.tickers.findFirst({
-    where: eq(tickers.id, data.tickerId),
-  })
+  const ticker = await findOrSkip(
+    db.select().from(tickers).where(eq(tickers.id, data.tickerId)).limit(1),
+  )
 
   if (!ticker) {
     console.error(`[fetchYahoo] Ticker not found: ${data.tickerId}`)
@@ -48,10 +49,10 @@ export const fetchYahoo = async (data: FetchYahooData) => {
     return
   }
 
-  const existingPrices = await db._query.prices.findMany({
-    where: eq(prices.tickerId, ticker.id),
-    columns: { date: true },
-  })
+  const existingPrices = await db
+    .select({ date: prices.date })
+    .from(prices)
+    .where(eq(prices.tickerId, ticker.id))
 
   const existingDates = new Set(existingPrices.map((p) => p.date))
 
