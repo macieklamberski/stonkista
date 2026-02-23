@@ -5,7 +5,7 @@ import { db } from '../instances/database.ts'
 import { convertPrice, convertPrices } from '../utils/currency.ts'
 import { getToday } from '../utils/dates.ts'
 import { parseCurrencyDateParams } from '../utils/params.ts'
-import { findPricesInRange, formatPrice } from '../utils/prices.ts'
+import { findPricesInRange, formatPrice, hasPrices } from '../utils/prices.ts'
 import { findOrSkip } from '../utils/queries.ts'
 
 export const cryptoRoutes = new Hono()
@@ -37,7 +37,7 @@ cryptoRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
     const { dateFrom, dateTo } = params.dateRange
     let entries = await findPricesInRange(ticker.id, dateFrom, dateTo)
 
-    if (entries.length === 0) {
+    if (!hasPrices(entries)) {
       return context.notFound()
     }
 

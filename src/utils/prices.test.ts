@@ -26,7 +26,7 @@ mock.module('../instances/database.ts', () => ({
   },
 }))
 
-import { findPricesInRange, formatPrice } from './prices.ts'
+import { findPricesInRange, formatPrice, hasPrices } from './prices.ts'
 
 describe('formatPrice', () => {
   it('should limit to 10 significant digits', () => {
@@ -75,6 +75,34 @@ describe('formatPrice', () => {
     expect(formatPrice(-123.45)).toBe('-123.45')
     expect(formatPrice('-0.005')).toBe('-0.005')
   })
+
+  it('should return empty string for null', () => {
+    expect(formatPrice(null)).toBe('')
+  })
+})
+
+describe('hasPrices', () => {
+  it('should return true when at least one entry has a price', () => {
+    const entries = [
+      { date: '2024-01-01', price: null },
+      { date: '2024-01-02', price: 100 },
+    ]
+
+    expect(hasPrices(entries)).toBe(true)
+  })
+
+  it('should return false when all entries have null prices', () => {
+    const entries = [
+      { date: '2024-01-01', price: null },
+      { date: '2024-01-02', price: null },
+    ]
+
+    expect(hasPrices(entries)).toBe(false)
+  })
+
+  it('should return false for empty array', () => {
+    expect(hasPrices([])).toBe(false)
+  })
 })
 
 const row = (date: string, price: string | null) => ({
@@ -114,9 +142,11 @@ describe('findPricesInRange', () => {
     expect(await findPricesInRange(1, '2024-01-01', '2024-01-02')).toEqual(expected)
   })
 
-  it('should omit dates before any available price', async () => {
+  it('should return null for dates before any available price', async () => {
     mockDbRows = [row('2024-01-03', '100')]
     const expected = [
+      { date: '2024-01-01', price: null },
+      { date: '2024-01-02', price: null },
       { date: '2024-01-03', price: 100 },
       { date: '2024-01-04', price: 100 },
       { date: '2024-01-05', price: 100 },
@@ -125,10 +155,17 @@ describe('findPricesInRange', () => {
     expect(await findPricesInRange(1, '2024-01-01', '2024-01-05')).toEqual(expected)
   })
 
-  it('should return empty array when no prices exist', async () => {
+  it('should return all null prices when no prices exist', async () => {
     mockDbRows = []
+    const expected = [
+      { date: '2024-01-01', price: null },
+      { date: '2024-01-02', price: null },
+      { date: '2024-01-03', price: null },
+      { date: '2024-01-04', price: null },
+      { date: '2024-01-05', price: null },
+    ]
 
-    expect(await findPricesInRange(1, '2024-01-01', '2024-01-05')).toEqual([])
+    expect(await findPricesInRange(1, '2024-01-01', '2024-01-05')).toEqual(expected)
   })
 
   it('should handle single-day range', async () => {
@@ -138,9 +175,10 @@ describe('findPricesInRange', () => {
     expect(await findPricesInRange(1, '2024-01-15', '2024-01-15')).toEqual(expected)
   })
 
-  it('should skip rows with null price', async () => {
+  it('should return null for dates where only null-price rows exist', async () => {
     mockDbRows = [row('2024-01-01', null), row('2024-01-02', '150')]
     const expected = [
+      { date: '2024-01-01', price: null },
       { date: '2024-01-02', price: 150 },
       { date: '2024-01-03', price: 150 },
     ]

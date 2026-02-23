@@ -15,4 +15,4 @@ export type NewRate = typeof tables.rates.$inferInsert
 export type Currency = typeof tables.currencies.$inferSelect
 export type NewCurrency = typeof tables.currencies.$inferInsert
 
-export type DatedPrice = { date: string; price: number }
+export type DatedPrice = { date: string; price: number | null }

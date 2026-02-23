@@ -96,7 +96,9 @@ export const convertPrices = async (
   for (const entry of entries) {
     const rate = ratesByDate.get(entry.date)
 
-    if (rate !== undefined) {
+    if (entry.price === null || rate === undefined) {
+      result.push({ date: entry.date, price: null })
+    } else {
       result.push({ date: entry.date, price: entry.price * rate })
     }
   }
@@ -207,11 +209,8 @@ export const findRatesInRange = async (
   }
 
   const ratesByDate = await fetchRatesByDate(from, to, dateFrom, dateTo)
-  const result: Array<DatedPrice> = []
 
-  for (const [date, rate] of ratesByDate) {
-    result.push({ date, price: rate })
-  }
-
-  return result
+  return generateDateRange(dateFrom, dateTo).map((date) => {
+    return { date, price: ratesByDate.get(date) ?? null }
+  })
 }

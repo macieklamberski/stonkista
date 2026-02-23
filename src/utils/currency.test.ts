@@ -231,19 +231,34 @@ describe('findRatesInRange', () => {
     expect(await findRatesInRange('USD', 'USD', '2024-01-01', '2024-01-02')).toEqual(expected)
   })
 
-  it('should return empty array when no rates found', async () => {
+  it('should return null prices when no rates found', async () => {
     mockFetchRateSeries({})
+    const expected = [{ date: '2024-01-01', price: null }]
 
-    expect(await findRatesInRange('USD', 'PLN', '2024-01-01', '2024-01-01')).toEqual([])
+    expect(await findRatesInRange('USD', 'PLN', '2024-01-01', '2024-01-01')).toEqual(expected)
   })
 
-  it('should skip dates where cross rate is incomplete', async () => {
+  it('should return null for dates where cross rate is incomplete', async () => {
     mockFetchRateSeries({
       'EUR-USD': [{ date: '2024-01-01', rate: 1.1 }],
       'EUR-PLN': [],
     })
+    const expected = [{ date: '2024-01-01', price: null }]
 
-    expect(await findRatesInRange('USD', 'PLN', '2024-01-01', '2024-01-01')).toEqual([])
+    expect(await findRatesInRange('USD', 'PLN', '2024-01-01', '2024-01-01')).toEqual(expected)
+  })
+
+  it('should return null for dates before first available rate', async () => {
+    mockFetchRateSeries({
+      'EUR-PLN': [{ date: '2024-01-03', rate: 4.5 }],
+    })
+    const expected = [
+      { date: '2024-01-01', price: null },
+      { date: '2024-01-02', price: null },
+      { date: '2024-01-03', price: 4.5 },
+    ]
+
+    expect(await findRatesInRange('EUR', 'PLN', '2024-01-01', '2024-01-03')).toEqual(expected)
   })
 })
 
@@ -276,7 +291,7 @@ describe('convertPrices', () => {
     expect(await convertPrices(entries, 'USD', 'PLN')).toEqual(expected)
   })
 
-  it('should omit entries where conversion fails', async () => {
+  it('should return null for entries where conversion fails', async () => {
     mockFetchRateSeries({
       'EUR-USD': [{ date: '2024-01-01', rate: 1.1 }],
       'EUR-PLN': [{ date: '2024-01-02', rate: 4.5 }],
@@ -285,9 +300,28 @@ describe('convertPrices', () => {
       { date: '2024-01-01', price: 100 },
       { date: '2024-01-02', price: 200 },
     ]
-    const expected = [{ date: '2024-01-02', price: 200 * (4.5 / 1.1) }]
+    const expected = [
+      { date: '2024-01-01', price: null },
+      { date: '2024-01-02', price: 200 * (4.5 / 1.1) },
+    ]
 
     expect(await convertPrices(entries, 'USD', 'PLN')).toEqual(expected)
+  })
+
+  it('should pass through null prices', async () => {
+    mockFetchRateSeries({
+      'EUR-PLN': [{ date: '2024-01-01', rate: 4.5 }],
+    })
+    const entries = [
+      { date: '2024-01-01', price: null },
+      { date: '2024-01-02', price: 100 },
+    ]
+    const expected = [
+      { date: '2024-01-01', price: null },
+      { date: '2024-01-02', price: 450 },
+    ]
+
+    expect(await convertPrices(entries, 'EUR', 'PLN')).toEqual(expected)
   })
 
   it('should return same prices when currencies are equal', async () => {

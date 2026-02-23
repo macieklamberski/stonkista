@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import { convertPrice, findRatesInRange, isCurrencyCode } from '../utils/currency.ts'
 import { getToday } from '../utils/dates.ts'
 import { type DateParam, parseDateParam } from '../utils/params.ts'
-import { formatPrice } from '../utils/prices.ts'
+import { formatPrice, hasPrices } from '../utils/prices.ts'
 
 export const forexRoutes = new Hono()
 
@@ -43,7 +43,7 @@ forexRoutes.get('/:from/:to/:date?', async (context) => {
     const { dateFrom, dateTo } = params.dateRange
     const entries = await findRatesInRange(from, params.currency, dateFrom, dateTo)
 
-    if (entries.length === 0) {
+    if (!hasPrices(entries)) {
       return context.notFound()
     }
 

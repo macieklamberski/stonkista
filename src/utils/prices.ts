@@ -12,7 +12,11 @@ const stripTrailingZeros = (value: string) => {
   return value.replace(/\.?0+$/, '')
 }
 
-export const formatPrice = (price: string | number, locale?: string) => {
+export const formatPrice = (price: string | number | null, locale?: string) => {
+  if (price === null) {
+    return ''
+  }
+
   const significantDigits = 10
   const num = typeof price === 'string' ? parseFloat(price) : price
 
@@ -68,6 +72,10 @@ export const upsertPrice = async (params: UpsertPriceParams) => {
     })
 }
 
+export const hasPrices = (entries: Array<DatedPrice>): boolean => {
+  return entries.some((entry) => entry.price !== null)
+}
+
 export const findPricesInRange = async (
   tickerId: number,
   dateFrom: string,
@@ -96,7 +104,7 @@ export const findPricesInRange = async (
 
   for (const date of allDates) {
     // Find latest price on or before this date.
-    let lastPrice: number | undefined
+    let lastPrice: number | null = null
 
     for (const row of rows) {
       if (row.date <= date && row.price !== null) {
@@ -104,9 +112,7 @@ export const findPricesInRange = async (
       }
     }
 
-    if (lastPrice !== undefined) {
-      result.push({ date, price: lastPrice })
-    }
+    result.push({ date, price: lastPrice })
   }
 
   return result
