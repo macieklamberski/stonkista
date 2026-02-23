@@ -2,52 +2,13 @@ import { and, desc, eq, lte } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { prices, tickers } from '../database/tables.ts'
 import { db } from '../instances/database.ts'
-import { convertPrice, convertPrices, isCurrencyCode } from '../utils/currency.ts'
-import { getToday, isValidDate, isValidDateRange, parseDateRange } from '../utils/dates.ts'
+import { convertPrice, convertPrices } from '../utils/currency.ts'
+import { getToday } from '../utils/dates.ts'
+import { parseCurrencyDateParams } from '../utils/params.ts'
 import { findPricesInRange, formatPrice } from '../utils/prices.ts'
 import { findOrSkip } from '../utils/queries.ts'
 
 export const cryptoRoutes = new Hono()
-
-type ParsedParams =
-  | { currency: string | undefined; date: string; dateRange?: undefined }
-  | {
-      currency: string | undefined
-      dateRange: { dateFrom: string; dateTo: string }
-      date?: undefined
-    }
-
-const parseParams = (currencyOrDate?: string, date?: string): ParsedParams | undefined => {
-  if (currencyOrDate && date) {
-    if (isValidDateRange(date)) {
-      return { currency: currencyOrDate.toUpperCase(), dateRange: parseDateRange(date)! }
-    }
-
-    if (!isValidDate(date)) {
-      return
-    }
-
-    return { currency: currencyOrDate.toUpperCase(), date: date }
-  }
-
-  if (currencyOrDate) {
-    if (isValidDate(currencyOrDate)) {
-      return { currency: undefined, date: currencyOrDate }
-    }
-
-    if (isValidDateRange(currencyOrDate)) {
-      return { currency: undefined, dateRange: parseDateRange(currencyOrDate)! }
-    }
-
-    if (isCurrencyCode(currencyOrDate)) {
-      return { currency: currencyOrDate.toUpperCase(), date: getToday() }
-    }
-
-    return
-  }
-
-  return { currency: undefined, date: getToday() }
-}
 
 // GET /crypto/:ticker
 // GET /crypto/:ticker/:currencyOrDate
@@ -57,7 +18,7 @@ const parseParams = (currencyOrDate?: string, date?: string): ParsedParams | und
 cryptoRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
   const { ticker: symbol, currencyOrDate, date } = context.req.param()
   const locale = context.req.query('locale')
-  const params = parseParams(currencyOrDate, date)
+  const params = parseCurrencyDateParams(currencyOrDate, date)
 
   const ticker = await findOrSkip(
     db
