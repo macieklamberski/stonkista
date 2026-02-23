@@ -1,5 +1,5 @@
 import { isCurrencyCode } from './currency.ts'
-import { getToday, isValidDate, isValidDateRange, parseDateRange } from './dates.ts'
+import { getToday, isFutureDate, isValidDate, isValidDateRange, parseDateRange } from './dates.ts'
 
 export type DateRange = { dateFrom: string; dateTo: string }
 
@@ -13,15 +13,21 @@ export type ParsedCurrencyDateParams =
 
 export const parseDateParam = (value: string): DateParam | undefined => {
   if (isValidDate(value)) {
+    if (isFutureDate(value)) {
+      return
+    }
+
     return { date: value }
   }
 
   if (isValidDateRange(value)) {
     const range = parseDateRange(value)
 
-    if (range) {
-      return { dateRange: range }
+    if (!range || isFutureDate(range.dateFrom) || isFutureDate(range.dateTo)) {
+      return
     }
+
+    return { dateRange: range }
   }
 }
 
