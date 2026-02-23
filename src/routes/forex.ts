@@ -37,6 +37,7 @@ const parseParams = (to: string, date?: string): ParsedParams | undefined => {
 
 // GET /forex/:from/:to
 // GET /forex/:from/:to/:date
+// GET /forex/:from/:to/:dateFrom..:dateTo
 forexRoutes.get('/:from/:to/:date?', async (context) => {
   const { from, to, date } = context.req.param()
   const locale = context.req.query('locale')

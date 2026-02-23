@@ -52,6 +52,8 @@ const parseParams = (currencyOrDate?: string, date?: string): ParsedParams | und
 // GET /crypto/:ticker
 // GET /crypto/:ticker/:currencyOrDate
 // GET /crypto/:ticker/:currency/:date
+// GET /crypto/:ticker/:dateFrom..:dateTo
+// GET /crypto/:ticker/:currency/:dateFrom..:dateTo
 cryptoRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
   const { ticker: symbol, currencyOrDate, date } = context.req.param()
   const locale = context.req.query('locale')
