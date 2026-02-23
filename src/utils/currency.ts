@@ -74,3 +74,21 @@ export const convertPrice = async (
     }
   }
 }
+
+export const convertPrices = async (
+  entries: Array<{ date: string; price: number }>,
+  fromCurrency: string,
+  toCurrency: string,
+): Promise<Array<{ date: string; price: number }>> => {
+  const result: Array<{ date: string; price: number }> = []
+
+  for (const entry of entries) {
+    const converted = await convertPrice(entry.price, fromCurrency, toCurrency, entry.date)
+
+    if (converted !== undefined) {
+      result.push({ date: entry.date, price: converted })
+    }
+  }
+
+  return result
+}

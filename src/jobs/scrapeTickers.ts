@@ -2,18 +2,9 @@ import { tickers } from '../database/tables.ts'
 import { db } from '../instances/database.ts'
 import { coingeckoQueue } from '../queues/coingecko.ts'
 import { yahooQueue } from '../queues/yahoo.ts'
+import { chunk } from '../utils/arrays.ts'
 
 const COINGECKO_BATCH_SIZE = 100
-
-const chunk = <T>(array: Array<T>, size: number): Array<Array<T>> => {
-  const chunks: Array<Array<T>> = []
-
-  for (let i = 0; i < array.length; i += size) {
-    chunks.push(array.slice(i, i + size))
-  }
-
-  return chunks
-}
 
 export const scrapeTickers = async () => {
   const allTickers = await db.select().from(tickers)

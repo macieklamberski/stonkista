@@ -25,7 +25,7 @@ type YahooResponse = {
   }
 }
 
-const mapInstrumentType = (instrumentType?: string): TickerType | undefined => {
+export const mapInstrumentType = (instrumentType?: string): TickerType | undefined => {
   switch (instrumentType?.toLowerCase()) {
     case 'etf':
       return 'etf'

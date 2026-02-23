@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'bun:test'
-import { formatDate, getToday, isValidDate } from './dates.ts'
+import {
+  formatDate,
+  generateDateRange,
+  getToday,
+  isValidDate,
+  isValidDateRange,
+  parseDateRange,
+} from './dates.ts'
 
 describe('isValidDate', () => {
   it('should return true for valid YYYY-MM-DD format', () => {
@@ -52,5 +59,92 @@ describe('getToday', () => {
     const value = getToday()
 
     expect(value).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+  })
+})
+
+describe('isValidDateRange', () => {
+  it('should return true for valid date range', () => {
+    expect(isValidDateRange('2024-01-01..2024-01-31')).toBe(true)
+    expect(isValidDateRange('2024-06-01..2024-06-01')).toBe(true)
+  })
+
+  it('should return false when dateFrom is after dateTo', () => {
+    expect(isValidDateRange('2024-01-31..2024-01-01')).toBe(false)
+  })
+
+  it('should return false for invalid date values', () => {
+    expect(isValidDateRange('2024-13-01..2024-01-31')).toBe(false)
+    expect(isValidDateRange('2024-01-01..2024-13-31')).toBe(false)
+  })
+
+  it('should return false for wrong format', () => {
+    expect(isValidDateRange('2024-01-01')).toBe(false)
+    expect(isValidDateRange('2024-01-01...2024-01-31')).toBe(false)
+    expect(isValidDateRange('2024-01-01.2024-01-31')).toBe(false)
+    expect(isValidDateRange('')).toBe(false)
+  })
+
+  it('should return false for bare separator or missing dates', () => {
+    expect(isValidDateRange('..')).toBe(false)
+    expect(isValidDateRange('2024-01-01..')).toBe(false)
+    expect(isValidDateRange('..2024-01-31')).toBe(false)
+  })
+})
+
+describe('parseDateRange', () => {
+  it('should parse valid date range', () => {
+    const expected = { dateFrom: '2024-01-01', dateTo: '2024-01-31' }
+
+    expect(parseDateRange('2024-01-01..2024-01-31')).toEqual(expected)
+  })
+
+  it('should parse same-day range', () => {
+    const expected = { dateFrom: '2024-06-15', dateTo: '2024-06-15' }
+
+    expect(parseDateRange('2024-06-15..2024-06-15')).toEqual(expected)
+  })
+
+  it('should return undefined for invalid range', () => {
+    expect(parseDateRange('2024-01-31..2024-01-01')).toBeUndefined()
+    expect(parseDateRange('not-a-range')).toBeUndefined()
+    expect(parseDateRange('')).toBeUndefined()
+  })
+})
+
+describe('generateDateRange', () => {
+  it('should generate all dates in range', () => {
+    const expected = ['2024-01-01', '2024-01-02', '2024-01-03', '2024-01-04', '2024-01-05']
+
+    expect(generateDateRange('2024-01-01', '2024-01-05')).toEqual(expected)
+  })
+
+  it('should return single date for same-day range', () => {
+    const expected = ['2024-06-15']
+
+    expect(generateDateRange('2024-06-15', '2024-06-15')).toEqual(expected)
+  })
+
+  it('should handle month boundary', () => {
+    const expected = ['2024-01-30', '2024-01-31', '2024-02-01', '2024-02-02']
+
+    expect(generateDateRange('2024-01-30', '2024-02-02')).toEqual(expected)
+  })
+
+  it('should handle year boundary', () => {
+    const expected = ['2023-12-30', '2023-12-31', '2024-01-01', '2024-01-02']
+
+    expect(generateDateRange('2023-12-30', '2024-01-02')).toEqual(expected)
+  })
+
+  it('should handle leap year boundary', () => {
+    const expected = ['2024-02-28', '2024-02-29', '2024-03-01']
+
+    expect(generateDateRange('2024-02-28', '2024-03-01')).toEqual(expected)
+  })
+
+  it('should handle non-leap year boundary', () => {
+    const expected = ['2023-02-27', '2023-02-28', '2023-03-01']
+
+    expect(generateDateRange('2023-02-27', '2023-03-01')).toEqual(expected)
   })
 })
