@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
-import { convertPrice, isCurrencyCode } from '../utils/currency.ts'
-import { generateDateRange, getToday } from '../utils/dates.ts'
+import { convertPrice, findRatesInRange, isCurrencyCode } from '../utils/currency.ts'
+import { getToday } from '../utils/dates.ts'
 import { type DateParam, parseDateParam } from '../utils/params.ts'
 import { formatPrice } from '../utils/prices.ts'
 
@@ -41,16 +41,7 @@ forexRoutes.get('/:from/:to/:date?', async (context) => {
   // Date range request.
   if (params.dateRange) {
     const { dateFrom, dateTo } = params.dateRange
-    const dates = generateDateRange(dateFrom, dateTo)
-    const entries: Array<{ date: string; price: number }> = []
-
-    for (const d of dates) {
-      const rate = await convertPrice(1, from.toUpperCase(), params.currency, d)
-
-      if (rate !== undefined) {
-        entries.push({ date: d, price: rate })
-      }
-    }
+    const entries = await findRatesInRange(from, params.currency, dateFrom, dateTo)
 
     if (entries.length === 0) {
       return context.notFound()

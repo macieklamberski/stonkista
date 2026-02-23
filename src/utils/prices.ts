@@ -1,7 +1,7 @@
 import { and, asc, eq, gte, lte } from 'drizzle-orm'
 import { prices } from '../database/tables.ts'
 import { db } from '../instances/database.ts'
-import type { NewPrice } from '../types/schemas.ts'
+import type { DatedPrice, NewPrice } from '../types/schemas.ts'
 import { formatDate, generateDateRange } from './dates.ts'
 
 const stripTrailingZeros = (value: string) => {
@@ -72,7 +72,7 @@ export const findPricesInRange = async (
   tickerId: number,
   dateFrom: string,
   dateTo: string,
-): Promise<Array<{ date: string; price: number }>> => {
+): Promise<Array<DatedPrice>> => {
   // Buffer 7 days before dateFrom to handle fallback for first days in range.
   const bufferDate = new Date(`${dateFrom}T00:00:00Z`)
   bufferDate.setUTCDate(bufferDate.getUTCDate() - 7)
@@ -92,7 +92,7 @@ export const findPricesInRange = async (
     .orderBy(asc(prices.date))
 
   const allDates = generateDateRange(dateFrom, dateTo)
-  const result: Array<{ date: string; price: number }> = []
+  const result: Array<DatedPrice> = []
 
   for (const date of allDates) {
     // Find latest price on or before this date.
