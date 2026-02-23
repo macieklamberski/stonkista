@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, mock, spyOn } from 'bun:test'
 import type { Rate } from '../types/schemas.ts'
 import * as currency from './currency.ts'
-import { convertPrice, isCurrencyCode } from './currency.ts'
+import { convertPrice, convertPrices, isCurrencyCode } from './currency.ts'
 
 describe('isCurrencyCode', () => {
   it('should return true for valid 3-letter currency codes', () => {
@@ -84,5 +84,60 @@ describe('convertPrice', () => {
     const value = await convertPrice(100, 'USD', 'PLN', '2024-01-15')
 
     expect(value).toBeUndefined()
+  })
+})
+
+describe('convertPrices', () => {
+  const mockRates = (ratesMap: Record<string, string>) => {
+    spyOn(currency, 'findRate').mockImplementation(async (from, to) => {
+      const rate = ratesMap[`${from}-${to}`]
+      return rate ? ({ rate } as Rate) : undefined
+    })
+  }
+
+  beforeEach(() => mock.restore())
+
+  it('should convert all entries', async () => {
+    mockRates({ 'USD-PLN': '4.5' })
+    const entries = [
+      { date: '2024-01-01', price: 100 },
+      { date: '2024-01-02', price: 200 },
+    ]
+    const expected = [
+      { date: '2024-01-01', price: 450 },
+      { date: '2024-01-02', price: 900 },
+    ]
+
+    expect(await convertPrices(entries, 'USD', 'PLN')).toEqual(expected)
+  })
+
+  it('should omit entries where conversion fails', async () => {
+    spyOn(currency, 'findRate').mockImplementation(async (from, to, date) => {
+      if (date === '2024-01-02') {
+        return undefined
+      }
+      const rate = ({ 'USD-PLN': '4.5' } as Record<string, string>)[`${from}-${to}`]
+      return rate ? ({ rate } as Rate) : undefined
+    })
+    const entries = [
+      { date: '2024-01-01', price: 100 },
+      { date: '2024-01-02', price: 200 },
+    ]
+    const expected = [{ date: '2024-01-01', price: 450 }]
+
+    expect(await convertPrices(entries, 'USD', 'PLN')).toEqual(expected)
+  })
+
+  it('should return same prices when currencies are equal', async () => {
+    const entries = [
+      { date: '2024-01-01', price: 100 },
+      { date: '2024-01-02', price: 200 },
+    ]
+
+    expect(await convertPrices(entries, 'USD', 'USD')).toEqual(entries)
+  })
+
+  it('should return empty array for empty input', async () => {
+    expect(await convertPrices([], 'USD', 'PLN')).toEqual([])
   })
 })

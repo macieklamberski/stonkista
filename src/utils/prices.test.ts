@@ -1,5 +1,32 @@
-import { describe, expect, it } from 'bun:test'
-import { formatPrice } from './prices.ts'
+import { beforeEach, describe, expect, it, mock } from 'bun:test'
+
+let mockDbRows: Array<{
+  date: string
+  price: string | null
+  available: boolean
+  id: number
+  tickerId: number
+  fetchedAt: Date
+}> = []
+
+mock.module('../instances/database.ts', () => ({
+  db: {
+    select: () => ({
+      from: () => ({
+        where: () => ({
+          orderBy: () => Promise.resolve([...mockDbRows]),
+        }),
+      }),
+    }),
+    insert: () => ({
+      values: () => ({
+        onConflictDoUpdate: () => Promise.resolve(),
+      }),
+    }),
+  },
+}))
+
+import { findPricesInRange, formatPrice } from './prices.ts'
 
 describe('formatPrice', () => {
   it('should limit to 10 significant digits', () => {
@@ -36,5 +63,67 @@ describe('formatPrice', () => {
   it('should format with locale', () => {
     expect(formatPrice('1234.56', 'de')).toBe('1234,56')
     expect(formatPrice(1234.56, 'de')).toBe('1234,56')
+  })
+})
+
+const row = (date: string, price: string | null) => ({
+  id: 1,
+  tickerId: 1,
+  date,
+  price,
+  available: true,
+  fetchedAt: new Date(),
+})
+
+describe('findPricesInRange', () => {
+  beforeEach(() => {
+    mockDbRows = []
+  })
+
+  it('should return prices for each day with fallback for gaps', async () => {
+    mockDbRows = [row('2024-01-01', '100.5'), row('2024-01-02', '101'), row('2024-01-04', '102')]
+    const expected = [
+      { date: '2024-01-01', price: 100.5 },
+      { date: '2024-01-02', price: 101 },
+      { date: '2024-01-03', price: 101 },
+      { date: '2024-01-04', price: 102 },
+      { date: '2024-01-05', price: 102 },
+    ]
+
+    expect(await findPricesInRange(1, '2024-01-01', '2024-01-05')).toEqual(expected)
+  })
+
+  it('should use buffer to resolve first day fallback', async () => {
+    mockDbRows = [row('2023-12-29', '99')]
+    const expected = [
+      { date: '2024-01-01', price: 99 },
+      { date: '2024-01-02', price: 99 },
+    ]
+
+    expect(await findPricesInRange(1, '2024-01-01', '2024-01-02')).toEqual(expected)
+  })
+
+  it('should omit dates before any available price', async () => {
+    mockDbRows = [row('2024-01-03', '100')]
+    const expected = [
+      { date: '2024-01-03', price: 100 },
+      { date: '2024-01-04', price: 100 },
+      { date: '2024-01-05', price: 100 },
+    ]
+
+    expect(await findPricesInRange(1, '2024-01-01', '2024-01-05')).toEqual(expected)
+  })
+
+  it('should return empty array when no prices exist', async () => {
+    mockDbRows = []
+
+    expect(await findPricesInRange(1, '2024-01-01', '2024-01-05')).toEqual([])
+  })
+
+  it('should handle single-day range', async () => {
+    mockDbRows = [row('2024-01-15', '200')]
+    const expected = [{ date: '2024-01-15', price: 200 }]
+
+    expect(await findPricesInRange(1, '2024-01-15', '2024-01-15')).toEqual(expected)
   })
 })
