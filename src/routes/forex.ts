@@ -1,19 +1,12 @@
 import { Hono } from 'hono'
 import { convertPrice, isCurrencyCode } from '../utils/currency.ts'
-import {
-  generateDateRange,
-  getToday,
-  isValidDate,
-  isValidDateRange,
-  parseDateRange,
-} from '../utils/dates.ts'
+import { generateDateRange, getToday } from '../utils/dates.ts'
+import { type DateParam, parseDateParam } from '../utils/params.ts'
 import { formatPrice } from '../utils/prices.ts'
 
 export const forexRoutes = new Hono()
 
-type ParsedParams =
-  | { currency: string; date: string; dateRange?: undefined }
-  | { currency: string; dateRange: { dateFrom: string; dateTo: string }; date?: undefined }
+type ParsedParams = { currency: string } & DateParam
 
 const parseParams = (to: string, date?: string): ParsedParams | undefined => {
   if (!isCurrencyCode(to)) {
@@ -21,15 +14,13 @@ const parseParams = (to: string, date?: string): ParsedParams | undefined => {
   }
 
   if (date) {
-    if (isValidDateRange(date)) {
-      return { currency: to.toUpperCase(), dateRange: parseDateRange(date)! }
-    }
+    const parsed = parseDateParam(date)
 
-    if (!isValidDate(date)) {
+    if (!parsed) {
       return
     }
 
-    return { currency: to.toUpperCase(), date }
+    return { currency: to.toUpperCase(), ...parsed }
   }
 
   return { currency: to.toUpperCase(), date: getToday() }
