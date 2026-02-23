@@ -64,6 +64,17 @@ describe('formatPrice', () => {
     expect(formatPrice('1234.56', 'de')).toBe('1234,56')
     expect(formatPrice(1234.56, 'de')).toBe('1234,56')
   })
+
+  it('should return zero for NaN and Infinity', () => {
+    expect(formatPrice(Number.NaN)).toBe('0')
+    expect(formatPrice(Number.POSITIVE_INFINITY)).toBe('0')
+    expect(formatPrice(Number.NEGATIVE_INFINITY)).toBe('0')
+  })
+
+  it('should handle negative prices', () => {
+    expect(formatPrice(-123.45)).toBe('-123.45')
+    expect(formatPrice('-0.005')).toBe('-0.005')
+  })
 })
 
 const row = (date: string, price: string | null) => ({
@@ -125,5 +136,25 @@ describe('findPricesInRange', () => {
     const expected = [{ date: '2024-01-15', price: 200 }]
 
     expect(await findPricesInRange(1, '2024-01-15', '2024-01-15')).toEqual(expected)
+  })
+
+  it('should skip rows with null price', async () => {
+    mockDbRows = [row('2024-01-01', null), row('2024-01-02', '150')]
+    const expected = [
+      { date: '2024-01-02', price: 150 },
+      { date: '2024-01-03', price: 150 },
+    ]
+
+    expect(await findPricesInRange(1, '2024-01-01', '2024-01-03')).toEqual(expected)
+  })
+
+  it('should use latest price when multiple exist before range start', async () => {
+    mockDbRows = [row('2023-12-27', '90'), row('2023-12-28', '95'), row('2023-12-29', '98')]
+    const expected = [
+      { date: '2024-01-01', price: 98 },
+      { date: '2024-01-02', price: 98 },
+    ]
+
+    expect(await findPricesInRange(1, '2024-01-01', '2024-01-02')).toEqual(expected)
   })
 })
