@@ -3,6 +3,7 @@ import {
   formatDate,
   generateDateRange,
   getToday,
+  isFutureDate,
   isValidDate,
   isValidDateRange,
   parseDateRange,
@@ -59,6 +60,20 @@ describe('getToday', () => {
     const value = getToday()
 
     expect(value).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+  })
+})
+
+describe('isFutureDate', () => {
+  it('should return true for future date', () => {
+    expect(isFutureDate('2099-01-01')).toBe(true)
+  })
+
+  it('should return false for past date', () => {
+    expect(isFutureDate('2020-01-01')).toBe(false)
+  })
+
+  it('should return false for today', () => {
+    expect(isFutureDate(getToday())).toBe(false)
   })
 })
 

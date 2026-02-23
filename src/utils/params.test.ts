@@ -26,6 +26,25 @@ describe('parseDateParam', () => {
   it('should return undefined for reversed date range', () => {
     expect(parseDateParam('2024-01-31..2024-01-01')).toBeUndefined()
   })
+
+  it('should return undefined for future single date', () => {
+    expect(parseDateParam('2099-01-01')).toBeUndefined()
+  })
+
+  it('should return undefined for range with future dateTo', () => {
+    expect(parseDateParam('2020-01-01..2099-12-31')).toBeUndefined()
+  })
+
+  it('should return undefined for entirely future range', () => {
+    expect(parseDateParam('2099-01-01..2099-12-31')).toBeUndefined()
+  })
+
+  it('should return date for today', () => {
+    const today = new Date().toISOString().split('T')[0]
+    const expected: DateParam = { date: today }
+
+    expect(parseDateParam(today)).toEqual(expected)
+  })
 })
 
 describe('parseCurrencyDateParams', () => {

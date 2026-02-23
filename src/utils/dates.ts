@@ -19,6 +19,10 @@ export const getToday = (): string => {
   return formatDate(new Date())
 }
 
+export const isFutureDate = (date: string): boolean => {
+  return date > getToday()
+}
+
 export const isValidDateRange = (value: string): boolean => {
   const parts = value.split('..')
 

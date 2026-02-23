@@ -58,9 +58,7 @@ forexRoutes.get('/:from/:to/:date?', async (context) => {
 
     context.header('Cache-Control', 'public, max-age=31536000')
 
-    const csv = entries
-      .map((entry) => `${entry.date},${formatPrice(entry.price, locale)}`)
-      .join('\n')
+    const csv = entries.map((entry) => formatPrice(entry.price, locale)).join('\n')
     return context.text(csv)
   }
 
