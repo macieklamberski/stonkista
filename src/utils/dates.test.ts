@@ -83,6 +83,12 @@ describe('isValidDateRange', () => {
     expect(isValidDateRange('2024-01-01.2024-01-31')).toBe(false)
     expect(isValidDateRange('')).toBe(false)
   })
+
+  it('should return false for bare separator or missing dates', () => {
+    expect(isValidDateRange('..')).toBe(false)
+    expect(isValidDateRange('2024-01-01..')).toBe(false)
+    expect(isValidDateRange('..2024-01-31')).toBe(false)
+  })
 })
 
 describe('parseDateRange', () => {
@@ -128,5 +134,17 @@ describe('generateDateRange', () => {
     const expected = ['2023-12-30', '2023-12-31', '2024-01-01', '2024-01-02']
 
     expect(generateDateRange('2023-12-30', '2024-01-02')).toEqual(expected)
+  })
+
+  it('should handle leap year boundary', () => {
+    const expected = ['2024-02-28', '2024-02-29', '2024-03-01']
+
+    expect(generateDateRange('2024-02-28', '2024-03-01')).toEqual(expected)
+  })
+
+  it('should handle non-leap year boundary', () => {
+    const expected = ['2023-02-27', '2023-02-28', '2023-03-01']
+
+    expect(generateDateRange('2023-02-27', '2023-03-01')).toEqual(expected)
   })
 })

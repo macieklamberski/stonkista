@@ -85,6 +85,38 @@ describe('convertPrice', () => {
 
     expect(value).toBeUndefined()
   })
+
+  it('should handle case-insensitive currency codes', async () => {
+    mockRates({ 'USD-PLN': '4.5' })
+
+    const value = await convertPrice(100, 'usd', 'pln', '2024-01-15')
+
+    expect(value).toBe(450)
+  })
+
+  it('should return zero when price is zero', async () => {
+    mockRates({ 'USD-PLN': '4.5' })
+
+    const value = await convertPrice(0, 'USD', 'PLN', '2024-01-15')
+
+    expect(value).toBe(0)
+  })
+
+  it('should skip EUR intermediate when from currency is EUR', async () => {
+    mockRates({ 'EUR-PLN': '4.5' })
+
+    const value = await convertPrice(100, 'EUR', 'PLN', '2024-01-15')
+
+    expect(value).toBe(450)
+  })
+
+  it('should skip EUR intermediate when to currency is EUR', async () => {
+    mockRates({ 'USD-EUR': '0.9' })
+
+    const value = await convertPrice(100, 'USD', 'EUR', '2024-01-15')
+
+    expect(value).toBe(90)
+  })
 })
 
 describe('convertPrices', () => {
@@ -139,5 +171,13 @@ describe('convertPrices', () => {
 
   it('should return empty array for empty input', async () => {
     expect(await convertPrices([], 'USD', 'PLN')).toEqual([])
+  })
+
+  it('should convert single entry', async () => {
+    mockRates({ 'USD-PLN': '4.5' })
+    const entries = [{ date: '2024-01-01', price: 100 }]
+    const expected = [{ date: '2024-01-01', price: 450 }]
+
+    expect(await convertPrices(entries, 'USD', 'PLN')).toEqual(expected)
   })
 })
