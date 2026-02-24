@@ -26,10 +26,17 @@ https://stonkista.com/AAPL/2024-01-15
 
 # Price on a specific date converted to EUR
 https://stonkista.com/AAPL/EUR/2024-01-15
+
+# Price range (one price per day, newline-separated)
+https://stonkista.com/AAPL/2024-01-01..2024-01-31
+
+# Price range converted to EUR
+https://stonkista.com/AAPL/EUR/2024-01-01..2024-01-31
 ```
 
 > [!NOTE]
 > Use [Yahoo Finance](https://finance.yahoo.com) ticker symbols (e.g., `AAPL`, `MSFT`, `GC=F` for gold futures).
+> Date ranges return one value per calendar day. On days without trading (weekends, holidays), the last known price is carried forward.
 
 ### Cryptocurrencies
 
@@ -45,6 +52,12 @@ https://stonkista.com/crypto/BTC/2024-01-15
 
 # Price on a specific date converted to PLN
 https://stonkista.com/crypto/BTC/PLN/2024-01-15
+
+# Price range (one price per day, newline-separated)
+https://stonkista.com/crypto/BTC/2024-01-01..2024-01-31
+
+# Price range converted to PLN
+https://stonkista.com/crypto/BTC/PLN/2024-01-01..2024-01-31
 ```
 
 ### Forex (Currency Exchange Rates)
@@ -55,6 +68,9 @@ https://stonkista.com/forex/USD/PLN
 
 # Rate on a specific date
 https://stonkista.com/forex/USD/PLN/2024-01-15
+
+# Rate range (one rate per day, newline-separated)
+https://stonkista.com/forex/USD/PLN/2024-01-01..2024-01-31
 ```
 
 > [!NOTE]
@@ -79,6 +95,9 @@ Use `IMPORTDATA` function to fetch prices into your spreadsheet:
 
 # Historical with date from cell
 =IMPORTDATA("https://stonkista.com/crypto/BTC/PLN/" & TEXT(A1, "YYYY-MM-DD"))
+
+# Date range (populates one price per row)
+=IMPORTDATA("https://stonkista.com/AAPL/2024-01-01..2024-01-31")
 ```
 
 ### Microsoft Excel
@@ -100,6 +119,9 @@ Use `WEBSERVICE` function wrapped in `NUMBERVALUE` to fetch prices into your spr
 
 # Historical with date from cell
 =NUMBERVALUE(WEBSERVICE("https://stonkista.com/crypto/BTC/PLN/" & TEXT(A1, "YYYY-MM-DD")))
+
+# Date range (returns newline-separated values)
+=WEBSERVICE("https://stonkista.com/AAPL/2024-01-01..2024-01-31")
 ```
 
 ## Data Sources
