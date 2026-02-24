@@ -4,7 +4,8 @@ import { cryptocompareQueue } from '../queues/cryptocompare.ts'
 import { yahooQueue } from '../queues/yahoo.ts'
 import { chunk } from '../utils/arrays.ts'
 
-const CRYPTOCOMPARE_BATCH_SIZE = 100
+// CryptoCompare pricemulti endpoint has 300 char limit on fsyms param.
+const CRYPTOCOMPARE_BATCH_SIZE = 50
 
 export const scrapeTickers = async () => {
   const allTickers = await db.select().from(tickers)

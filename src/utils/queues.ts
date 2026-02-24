@@ -11,6 +11,11 @@ export const createQueue = <Data, Result, Name extends string>(
 ) => {
   const queue: Queue<Data, Result, Name> = new Queue(name, {
     ...options?.queue,
+    defaultJobOptions: {
+      removeOnComplete: { count: 100 },
+      removeOnFail: { count: 100 },
+      ...options?.queue?.defaultJobOptions,
+    },
     connection,
   })
 

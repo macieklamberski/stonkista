@@ -13,9 +13,9 @@ type HistodayResponse = {
   }
 }
 
-type PriceMultiResponse = {
-  [symbol: string]: { USD?: number }
-}
+type PriceMultiResponse =
+  | { [symbol: string]: { USD?: number } }
+  | { Response: 'Error'; Message: string }
 
 type CoinListResponse = {
   Response: string
@@ -43,12 +43,17 @@ export const fetchLatestBatch = async (
     const url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${fsyms}&tsyms=USD`
     const response = await fetchUrl(url, { proxy, headers: headers() })
     const data = (await response.json()) as PriceMultiResponse
+
+    if ('Response' in data && data.Response === 'Error') {
+      throw new Error(`[CryptoCompare] API error: ${data.Message}`)
+    }
+
     const date = formatDate(Date.now())
 
     const result = new Map<string, PriceData>()
 
     for (const symbol of symbols) {
-      const price = data[symbol]?.USD
+      const price = (data as Record<string, { USD?: number }>)[symbol]?.USD
 
       if (typeof price === 'number') {
         result.set(symbol, { date, price })
