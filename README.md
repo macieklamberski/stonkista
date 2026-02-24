@@ -1,6 +1,6 @@
 # Stonkista
 
-Minimalist API to get current and historical price data for stocks, cryptocurrencies, and currencies from Yahoo Finance, CoinGecko, and Frankfurter.
+Minimalist API to get current and historical price data for stocks, cryptocurrencies, and currencies from Yahoo Finance, CryptoCompare, and Frankfurter.
 
 **[stonkista.com ↗](https://stonkista.com)**
 &nbsp;&nbsp;·&nbsp;&nbsp;
@@ -105,8 +105,10 @@ Use `WEBSERVICE` function wrapped in `NUMBERVALUE` to fetch prices into your spr
 ## Data Sources
 
 - **[Yahoo Finance](https://finance.yahoo.com)** — Stocks, ETFs, and commodities. Uses unofficial API endpoints. See [AlgoTrading101 guide](https://algotrading101.com/learn/yahoo-finance-api-guide/) for more details.
-- **[CoinGecko](https://www.coingecko.com)** — Cryptocurrency prices and market data for 5000+ coins, tracked by market cap rank.
+- **[CryptoCompare](https://www.cryptocompare.com)** — Cryptocurrency prices and full daily history for top 1000 coins by market cap.
 - **[Frankfurter](https://frankfurter.dev)** — Currency exchange rates sourced from European Central Bank (ECB), with historical data going back to January 1999.
+
+With thousands of stocks, ETFs, commodities, and cryptocurrencies available, not all tickers are pre-loaded. New stock, ETF, commodity, and cryptocurrency tickers are added on demand on first request.
 
 ## Disclaimer
 

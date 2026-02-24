@@ -2,10 +2,11 @@ import { and, desc, eq, lte } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { prices, tickers } from '../database/tables.ts'
 import { db } from '../instances/database.ts'
+import { fetchHistorical } from '../sources/cryptocompare.ts'
 import { convertPrice, convertPrices } from '../utils/currency.ts'
 import { getToday } from '../utils/dates.ts'
 import { parseCurrencyDateParams } from '../utils/params.ts'
-import { findPricesInRange, formatPrice, hasPrices } from '../utils/prices.ts'
+import { findPricesInRange, formatPrice, hasPrices, upsertPrice } from '../utils/prices.ts'
 import { findOrSkip } from '../utils/queries.ts'
 
 export const cryptoRoutes = new Hono()
@@ -20,7 +21,11 @@ cryptoRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
   const locale = context.req.query('locale')
   const params = parseCurrencyDateParams(currencyOrDate, date)
 
-  const ticker = await findOrSkip(
+  if (!params) {
+    return context.notFound()
+  }
+
+  let ticker = await findOrSkip(
     db
       .select()
       .from(tickers)
@@ -28,8 +33,35 @@ cryptoRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
       .limit(1),
   )
 
-  if (!ticker || !params) {
-    return context.notFound()
+  // Lazy load from CryptoCompare if ticker not found.
+  if (!ticker) {
+    const data = await fetchHistorical(symbol.toUpperCase())
+
+    if (!data || data.prices.length === 0) {
+      return context.notFound()
+    }
+
+    const [newTicker] = await db
+      .insert(tickers)
+      .values({
+        symbol: symbol.toUpperCase(),
+        type: 'crypto',
+        currency: 'USD',
+        source: 'cryptocompare',
+        sourceId: symbol.toUpperCase(),
+      })
+      .returning()
+
+    for (const price of data.prices) {
+      await upsertPrice({
+        tickerId: newTicker.id,
+        date: price.date,
+        price: price.price,
+        available: true,
+      })
+    }
+
+    ticker = newTicker
   }
 
   // Date range request.
