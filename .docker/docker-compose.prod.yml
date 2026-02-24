@@ -68,6 +68,8 @@ services:
       REDIS_PORT: ${QUEUE_PORT}
       BULL_PREFIX: bull
       BULL_VERSION: BULLMQ
+      LOGIN_USER: ${BULLBOARD_USER}
+      LOGIN_PASSWORD: ${BULLBOARD_PASS}
     depends_on:
       redis:
         condition: service_healthy
