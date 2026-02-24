@@ -2,7 +2,6 @@ import { tickers } from '../database/tables.ts'
 import { db } from '../instances/database.ts'
 import { cryptocompareQueue } from '../queues/cryptocompare.ts'
 import { yahooQueue } from '../queues/yahoo.ts'
-import { chunk } from '../utils/arrays.ts'
 
 // CryptoCompare pricemulti endpoint has 300 char limit on fsyms param.
 const CRYPTOCOMPARE_FSYMS_MAX_LENGTH = 300
