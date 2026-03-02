@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@types/bun": "^1.3.9",
-    "drizzle-kit": "1.0.0-beta.15-859cf75",
+    "drizzle-kit": "1.0.0-beta.15-9485290",
     "kvalita": "^1.10.0",
     "typescript": "^5.9.3"
   }
