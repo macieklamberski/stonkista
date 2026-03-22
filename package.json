@@ -12,15 +12,15 @@
     "test": "bun test"
   },
   "dependencies": {
-    "bullmq": "^5.70.1",
-    "drizzle-orm": "1.0.0-beta.15-859cf75",
-    "hono": "^4.12.3",
+    "bullmq": "^5.71.0",
+    "drizzle-orm": "1.0.0-beta.18-7eb39f0",
+    "hono": "^4.12.8",
     "postgres": "^3.4.8"
   },
   "devDependencies": {
-    "@types/bun": "^1.3.9",
-    "drizzle-kit": "1.0.0-beta.15-859cf75",
-    "kvalita": "^1.10.0",
+    "@types/bun": "^1.3.11",
+    "drizzle-kit": "1.0.0-beta.18-7eb39f0",
+    "kvalita": "^1.11.0",
     "typescript": "^5.9.3"
   }
 }
