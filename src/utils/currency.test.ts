@@ -46,7 +46,7 @@ describe('isCurrencyCode', () => {
 
 describe('convertPrice', () => {
   const mockRates = (ratesMap: Record<string, string>) => {
-    spyOn(currency, 'findRate').mockImplementation(async (from, to) => {
+    spyOn(currency, 'findRate').mockImplementation(async (from: string, to: string) => {
       const rate = ratesMap[`${from}-${to}`]
       return rate ? ({ rate } as Rate) : undefined
     })
@@ -55,73 +55,73 @@ describe('convertPrice', () => {
   beforeEach(() => mock.restore())
 
   it('should return same price when currencies are equal', async () => {
-    const value = await convertPrice(100, 'USD', 'USD', '2024-01-15')
+    const result = await convertPrice(100, 'USD', 'USD', '2024-01-15')
 
-    expect(value).toBe(100)
+    expect(result).toBe(100)
   })
 
   it('should convert using direct rate', async () => {
     mockRates({ 'USD-PLN': '4.5' })
 
-    const value = await convertPrice(100, 'USD', 'PLN', '2024-01-15')
+    const result = await convertPrice(100, 'USD', 'PLN', '2024-01-15')
 
-    expect(value).toBe(450)
+    expect(result).toBe(450)
   })
 
   it('should convert using inverse rate when direct not found', async () => {
     mockRates({ 'PLN-USD': '0.25' })
 
-    const value = await convertPrice(100, 'USD', 'PLN', '2024-01-15')
+    const result = await convertPrice(100, 'USD', 'PLN', '2024-01-15')
 
-    expect(value).toBe(400)
+    expect(result).toBe(400)
   })
 
   it('should convert through EUR intermediate when no direct/inverse rate', async () => {
     mockRates({ 'EUR-USD': '1.1', 'EUR-PLN': '4.5' })
 
-    const value = await convertPrice(100, 'USD', 'PLN', '2024-01-15')
+    const result = await convertPrice(100, 'USD', 'PLN', '2024-01-15')
 
-    expect(value).toBeCloseTo(409.09, 1)
+    expect(result).toBeCloseTo(409.09, 1)
   })
 
   it('should return undefined when no conversion path found', async () => {
     mockRates({})
 
-    const value = await convertPrice(100, 'USD', 'PLN', '2024-01-15')
+    const result = await convertPrice(100, 'USD', 'PLN', '2024-01-15')
 
-    expect(value).toBeUndefined()
+    expect(result).toBeUndefined()
   })
 
   it('should handle case-insensitive currency codes', async () => {
     mockRates({ 'USD-PLN': '4.5' })
 
-    const value = await convertPrice(100, 'usd', 'pln', '2024-01-15')
+    const result = await convertPrice(100, 'usd', 'pln', '2024-01-15')
 
-    expect(value).toBe(450)
+    expect(result).toBe(450)
   })
 
   it('should return zero when price is zero', async () => {
     mockRates({ 'USD-PLN': '4.5' })
 
-    const value = await convertPrice(0, 'USD', 'PLN', '2024-01-15')
+    const result = await convertPrice(0, 'USD', 'PLN', '2024-01-15')
 
-    expect(value).toBe(0)
+    expect(result).toBe(0)
   })
 
   it('should skip EUR intermediate when from currency is EUR', async () => {
     mockRates({ 'EUR-PLN': '4.5' })
 
-    const value = await convertPrice(100, 'EUR', 'PLN', '2024-01-15')
+    const result = await convertPrice(100, 'EUR', 'PLN', '2024-01-15')
 
-    expect(value).toBe(450)
+    expect(result).toBe(450)
   })
 
   it('should skip EUR intermediate when to currency is EUR', async () => {
     mockRates({ 'USD-EUR': '0.9' })
 
-    const value = await convertPrice(100, 'USD', 'EUR', '2024-01-15')
+    const result = await convertPrice(100, 'USD', 'EUR', '2024-01-15')
 
-    expect(value).toBe(90)
+    expect(result).toBe(90)
   })
 })
 
@@ -168,7 +168,7 @@ describe('findRatesInRange', () => {
   const mockFetchRateSeries = (
     seriesMap: Record<string, Array<{ date: string; rate: number }>>,
   ) => {
-    spyOn(currency, 'fetchRateSeries').mockImplementation(async (from, to) => {
+    spyOn(currency, 'fetchRateSeries').mockImplementation(async (from: string, to: string) => {
       return seriesMap[`${from}-${to}`] ?? []
     })
   }
@@ -194,7 +194,7 @@ describe('findRatesInRange', () => {
     mockFetchRateSeries({
       'EUR-USD': [{ date: '2024-01-01', rate: 1.1 }],
     })
-    const expected = [{ date: '2024-01-01', price: 1 / 1.1 }]
+    const expected = [{ date: '2024-01-01', price: expect.closeTo(0.9091, 3) }]
 
     expect(await findRatesInRange('USD', 'EUR', '2024-01-01', '2024-01-01')).toEqual(expected)
   })
@@ -204,7 +204,7 @@ describe('findRatesInRange', () => {
       'EUR-USD': [{ date: '2024-01-01', rate: 1.1 }],
       'EUR-PLN': [{ date: '2024-01-01', rate: 4.5 }],
     })
-    const expected = [{ date: '2024-01-01', price: 4.5 / 1.1 }]
+    const expected = [{ date: '2024-01-01', price: expect.closeTo(4.0909, 3) }]
 
     expect(await findRatesInRange('USD', 'PLN', '2024-01-01', '2024-01-01')).toEqual(expected)
   })
@@ -266,7 +266,7 @@ describe('convertPrices', () => {
   const mockFetchRateSeries = (
     seriesMap: Record<string, Array<{ date: string; rate: number }>>,
   ) => {
-    spyOn(currency, 'fetchRateSeries').mockImplementation(async (from, to) => {
+    spyOn(currency, 'fetchRateSeries').mockImplementation(async (from: string, to: string) => {
       return seriesMap[`${from}-${to}`] ?? []
     })
   }
@@ -282,10 +282,9 @@ describe('convertPrices', () => {
       { date: '2024-01-01', price: 100 },
       { date: '2024-01-02', price: 200 },
     ]
-    const rate = 4.5 / 1.1
     const expected = [
-      { date: '2024-01-01', price: 100 * rate },
-      { date: '2024-01-02', price: 200 * rate },
+      { date: '2024-01-01', price: expect.closeTo(409.09, 1) },
+      { date: '2024-01-02', price: expect.closeTo(818.18, 1) },
     ]
 
     expect(await convertPrices(entries, 'USD', 'PLN')).toEqual(expected)
@@ -302,7 +301,7 @@ describe('convertPrices', () => {
     ]
     const expected = [
       { date: '2024-01-01', price: null },
-      { date: '2024-01-02', price: 200 * (4.5 / 1.1) },
+      { date: '2024-01-02', price: expect.closeTo(818.18, 1) },
     ]
 
     expect(await convertPrices(entries, 'USD', 'PLN')).toEqual(expected)

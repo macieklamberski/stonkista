@@ -43,23 +43,17 @@ describe('isValidDate', () => {
 
 describe('formatDate', () => {
   it('should format timestamp to YYYY-MM-DD', () => {
-    const value = formatDate(1705320000000)
-
-    expect(value).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+    expect(formatDate(1705320000000)).toMatch(/^\d{4}-\d{2}-\d{2}$/)
   })
 
   it('should format Date object to YYYY-MM-DD', () => {
-    const value = formatDate(new Date('2024-01-15T12:00:00Z'))
-
-    expect(value).toBe('2024-01-15')
+    expect(formatDate(new Date('2024-01-15T12:00:00Z'))).toBe('2024-01-15')
   })
 })
 
 describe('getToday', () => {
   it('should return date in YYYY-MM-DD format', () => {
-    const value = getToday()
-
-    expect(value).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+    expect(getToday()).toMatch(/^\d{4}-\d{2}-\d{2}$/)
   })
 })
 
