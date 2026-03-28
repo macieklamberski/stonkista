@@ -1,6 +1,5 @@
 import { apiKey, proxy } from '../constants/cryptocompare.ts'
 import type { HistoricalPriceData, PriceData } from '../types/sources.ts'
-import { sleep } from '../utils/async.ts'
 import { formatDate } from '../utils/dates.ts'
 import { fetchUrl } from '../utils/fetch.ts'
 
@@ -28,12 +27,6 @@ type HistodayResponse = {
 type PriceMultiResponse =
   | { [symbol: string]: { USD?: number } }
   | { Response: 'Error'; Message: string }
-
-type CoinListResponse = {
-  Response: string
-  Message?: string
-  Data: Record<string, { Symbol: string }>
-}
 
 const headers = (): Record<string, string> => {
   if (apiKey) {
@@ -107,61 +100,19 @@ export const fetchHistorical = async (symbol: string): Promise<HistoricalPriceDa
 }
 
 export const fetchTopCoins = async (
+  page: number,
   limit: number,
 ): Promise<Array<{ symbol: string; name: string }>> => {
-  const perPage = 100
-  const delayMs = 1000
-  const totalPages = Math.ceil(limit / perPage)
-  const coins: Array<{ symbol: string; name: string }> = []
+  const url = `https://min-api.cryptocompare.com/data/top/mktcapfull?limit=${limit}&page=${page}&tsym=USD`
+  const response = await fetchUrl(url, { proxy, headers: headers() })
+  const data = (await response.json()) as TopCoinsResponse
 
-  for (let page = 0; page < totalPages; page++) {
-    const url = `https://min-api.cryptocompare.com/data/top/mktcapfull?limit=${perPage}&page=${page}&tsym=USD`
-    const response = await fetchUrl(url, { proxy, headers: headers() })
-    const data = (await response.json()) as TopCoinsResponse
-
-    if (!Array.isArray(data.Data)) {
-      throw new Error(`[CryptoCompare] Unexpected response: ${JSON.stringify(data).slice(0, 500)}`)
-    }
-
-    for (const coin of data.Data) {
-      if (coins.length < limit) {
-        coins.push({
-          symbol: coin.CoinInfo.Name,
-          name: coin.CoinInfo.FullName,
-        })
-      }
-    }
-
-    console.log(`[CryptoCompare] Fetched page ${page + 1}/${totalPages} (${coins.length} coins)`)
-
-    if (page < totalPages - 1) {
-      await sleep(delayMs)
-    }
+  if (!Array.isArray(data.Data)) {
+    throw new Error(`[CryptoCompare] Unexpected response: ${JSON.stringify(data).slice(0, 500)}`)
   }
 
-  return coins
-}
-
-export const fetchCoinList = async (): Promise<Set<string>> => {
-  try {
-    const url = 'https://min-api.cryptocompare.com/data/all/coinlist'
-    const response = await fetchUrl(url, { proxy, headers: headers() })
-    const data = (await response.json()) as CoinListResponse
-
-    if (data.Response !== 'Success') {
-      console.error(`[CryptoCompare] Coin list failed: ${data.Message}`)
-      return new Set()
-    }
-
-    const symbols = new Set<string>()
-
-    for (const coin of Object.values(data.Data)) {
-      symbols.add(coin.Symbol)
-    }
-
-    return symbols
-  } catch (error) {
-    console.error('[CryptoCompare] Fetch coin list error:', error)
-    return new Set()
-  }
+  return data.Data.map((coin) => ({
+    symbol: coin.CoinInfo.Name,
+    name: coin.CoinInfo.FullName,
+  }))
 }
