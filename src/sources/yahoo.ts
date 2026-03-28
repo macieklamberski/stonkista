@@ -1,5 +1,10 @@
 import type { TickerType } from '../types/schemas.ts'
-import type { PriceData, PriceHistoricalFetcher, PriceLatestFetcher } from '../types/sources.ts'
+import type {
+  PriceData,
+  PriceHistoricalFetcher,
+  PriceLatestFetcher,
+  TickerMetadata,
+} from '../types/sources.ts'
 import { formatDate } from '../utils/dates.ts'
 import { fetchUrl } from '../utils/fetch.ts'
 
@@ -63,6 +68,27 @@ const fetchData = async (
     return await response.json()
   } catch (error) {
     console.error(`[Yahoo] Fetch error for ${symbol}:`, error)
+  }
+}
+
+export const fetchMetadata = async (symbol: string): Promise<TickerMetadata | undefined> => {
+  const data = await fetchData(symbol, { range: '1d', interval: '1d' })
+  const meta = data?.chart?.result?.[0]?.meta
+
+  if (!meta) {
+    return
+  }
+
+  const type = mapInstrumentType(meta.instrumentType)
+
+  if (!type) {
+    return
+  }
+
+  return {
+    name: meta.longName ?? meta.shortName,
+    type,
+    currency: meta.currency,
   }
 }
 
