@@ -19,6 +19,12 @@ export type PriceHistoricalFetcher = (
   fromDate?: string,
 ) => Promise<HistoricalPriceData | undefined>
 
+export type TickerMetadata = {
+  name?: string
+  type: TickerType
+  currency: string
+}
+
 export type CurrencyRateData = {
   date: string
   rates: Record<string, number>
