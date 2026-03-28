@@ -1,1 +1,0 @@
-ALTER TYPE "source_types" ADD VALUE 'cryptocompare';

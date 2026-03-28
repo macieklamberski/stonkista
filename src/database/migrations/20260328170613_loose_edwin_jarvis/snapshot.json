@@ -1,22 +1,44 @@
 {
-  "id": "e6bf7387-51d6-46e9-bc0f-400ad76f5f10",
-  "prevIds": ["bd2fb005-79b7-4616-88c7-db94e0e8af25"],
   "version": "8",
   "dialect": "postgres",
+  "id": "eda98089-4684-4088-b086-e7290a8e2775",
+  "prevIds": ["00000000-0000-0000-0000-000000000000"],
   "ddl": [
+    {
+      "values": ["yahoo", "coingecko", "cryptocompare"],
+      "name": "source_types",
+      "entityType": "enums",
+      "schema": "public"
+    },
+    {
+      "values": ["stock", "etf", "crypto", "commodity"],
+      "name": "ticker_types",
+      "entityType": "enums",
+      "schema": "public"
+    },
     {
       "isRlsEnabled": false,
       "name": "currencies",
-      "schema": "public",
-      "entityType": "tables"
+      "entityType": "tables",
+      "schema": "public"
     },
     {
-      "columns": ["id"],
-      "nameExplicit": false,
-      "name": "currencies_pkey",
-      "schema": "public",
-      "table": "currencies",
-      "entityType": "pks"
+      "isRlsEnabled": false,
+      "name": "prices",
+      "entityType": "tables",
+      "schema": "public"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "rates",
+      "entityType": "tables",
+      "schema": "public"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "tickers",
+      "entityType": "tables",
+      "schema": "public"
     },
     {
       "type": "serial",
@@ -27,9 +49,9 @@
       "generated": null,
       "identity": null,
       "name": "id",
+      "entityType": "columns",
       "schema": "public",
-      "table": "currencies",
-      "entityType": "columns"
+      "table": "currencies"
     },
     {
       "type": "varchar(10)",
@@ -40,9 +62,9 @@
       "generated": null,
       "identity": null,
       "name": "code",
+      "entityType": "columns",
       "schema": "public",
-      "table": "currencies",
-      "entityType": "columns"
+      "table": "currencies"
     },
     {
       "type": "varchar(255)",
@@ -53,9 +75,9 @@
       "generated": null,
       "identity": null,
       "name": "name",
+      "entityType": "columns",
       "schema": "public",
-      "table": "currencies",
-      "entityType": "columns"
+      "table": "currencies"
     },
     {
       "type": "boolean",
@@ -66,9 +88,9 @@
       "generated": null,
       "identity": null,
       "name": "active",
+      "entityType": "columns",
       "schema": "public",
-      "table": "currencies",
-      "entityType": "columns"
+      "table": "currencies"
     },
     {
       "type": "timestamp",
@@ -79,32 +101,9 @@
       "generated": null,
       "identity": null,
       "name": "created_at",
+      "entityType": "columns",
       "schema": "public",
-      "table": "currencies",
-      "entityType": "columns"
-    },
-    {
-      "nameExplicit": false,
-      "columns": ["code"],
-      "nullsNotDistinct": false,
-      "name": "currencies_code_unique",
-      "schema": "public",
-      "table": "currencies",
-      "entityType": "uniques"
-    },
-    {
-      "isRlsEnabled": false,
-      "name": "prices",
-      "schema": "public",
-      "entityType": "tables"
-    },
-    {
-      "columns": ["id"],
-      "nameExplicit": false,
-      "name": "prices_pkey",
-      "schema": "public",
-      "table": "prices",
-      "entityType": "pks"
+      "table": "currencies"
     },
     {
       "type": "serial",
@@ -115,9 +114,9 @@
       "generated": null,
       "identity": null,
       "name": "id",
+      "entityType": "columns",
       "schema": "public",
-      "table": "prices",
-      "entityType": "columns"
+      "table": "prices"
     },
     {
       "type": "integer",
@@ -128,9 +127,9 @@
       "generated": null,
       "identity": null,
       "name": "ticker_id",
+      "entityType": "columns",
       "schema": "public",
-      "table": "prices",
-      "entityType": "columns"
+      "table": "prices"
     },
     {
       "type": "date",
@@ -141,9 +140,9 @@
       "generated": null,
       "identity": null,
       "name": "date",
+      "entityType": "columns",
       "schema": "public",
-      "table": "prices",
-      "entityType": "columns"
+      "table": "prices"
     },
     {
       "type": "numeric(32,16)",
@@ -154,9 +153,9 @@
       "generated": null,
       "identity": null,
       "name": "price",
+      "entityType": "columns",
       "schema": "public",
-      "table": "prices",
-      "entityType": "columns"
+      "table": "prices"
     },
     {
       "type": "boolean",
@@ -167,9 +166,9 @@
       "generated": null,
       "identity": null,
       "name": "available",
+      "entityType": "columns",
       "schema": "public",
-      "table": "prices",
-      "entityType": "columns"
+      "table": "prices"
     },
     {
       "type": "timestamp",
@@ -180,9 +179,204 @@
       "generated": null,
       "identity": null,
       "name": "fetched_at",
+      "entityType": "columns",
       "schema": "public",
-      "table": "prices",
-      "entityType": "columns"
+      "table": "prices"
+    },
+    {
+      "type": "serial",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "rates"
+    },
+    {
+      "type": "date",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "date",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "rates"
+    },
+    {
+      "type": "varchar(10)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "from_currency",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "rates"
+    },
+    {
+      "type": "varchar(10)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "to_currency",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "rates"
+    },
+    {
+      "type": "numeric(32,16)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "rate",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "rates"
+    },
+    {
+      "type": "timestamp",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "fetched_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "rates"
+    },
+    {
+      "type": "serial",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "tickers"
+    },
+    {
+      "type": "varchar(255)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "symbol",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "tickers"
+    },
+    {
+      "type": "varchar(255)",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "name",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "tickers"
+    },
+    {
+      "type": "ticker_types",
+      "typeSchema": "public",
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "type",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "tickers"
+    },
+    {
+      "type": "varchar(10)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "currency",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "tickers"
+    },
+    {
+      "type": "source_types",
+      "typeSchema": "public",
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "source",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "tickers"
+    },
+    {
+      "type": "varchar(100)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "source_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "tickers"
+    },
+    {
+      "type": "boolean",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "true",
+      "generated": null,
+      "identity": null,
+      "name": "active",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "tickers"
+    },
+    {
+      "type": "timestamp",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "tickers"
     },
     {
       "nameExplicit": true,
@@ -208,9 +402,9 @@
       "method": "btree",
       "concurrently": false,
       "name": "prices_ticker_date",
+      "entityType": "indexes",
       "schema": "public",
-      "table": "prices",
-      "entityType": "indexes"
+      "table": "prices"
     },
     {
       "nameExplicit": true,
@@ -229,114 +423,9 @@
       "method": "btree",
       "concurrently": false,
       "name": "prices_date",
+      "entityType": "indexes",
       "schema": "public",
-      "table": "prices",
-      "entityType": "indexes"
-    },
-    {
-      "nameExplicit": false,
-      "columns": ["ticker_id"],
-      "schemaTo": "public",
-      "tableTo": "tickers",
-      "columnsTo": ["id"],
-      "onUpdate": "NO ACTION",
-      "onDelete": "CASCADE",
-      "name": "prices_ticker_id_tickers_id_fk",
-      "schema": "public",
-      "table": "prices",
-      "entityType": "fks"
-    },
-    {
-      "isRlsEnabled": false,
-      "name": "rates",
-      "schema": "public",
-      "entityType": "tables"
-    },
-    {
-      "columns": ["id"],
-      "nameExplicit": false,
-      "name": "rates_pkey",
-      "schema": "public",
-      "table": "rates",
-      "entityType": "pks"
-    },
-    {
-      "type": "serial",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "id",
-      "schema": "public",
-      "table": "rates",
-      "entityType": "columns"
-    },
-    {
-      "type": "date",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "date",
-      "schema": "public",
-      "table": "rates",
-      "entityType": "columns"
-    },
-    {
-      "type": "varchar(10)",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "from_currency",
-      "schema": "public",
-      "table": "rates",
-      "entityType": "columns"
-    },
-    {
-      "type": "varchar(10)",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "to_currency",
-      "schema": "public",
-      "table": "rates",
-      "entityType": "columns"
-    },
-    {
-      "type": "numeric(32,16)",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "rate",
-      "schema": "public",
-      "table": "rates",
-      "entityType": "columns"
-    },
-    {
-      "type": "timestamp",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "now()",
-      "generated": null,
-      "identity": null,
-      "name": "fetched_at",
-      "schema": "public",
-      "table": "rates",
-      "entityType": "columns"
+      "table": "prices"
     },
     {
       "nameExplicit": true,
@@ -369,9 +458,9 @@
       "method": "btree",
       "concurrently": false,
       "name": "rates_unique",
+      "entityType": "indexes",
       "schema": "public",
-      "table": "rates",
-      "entityType": "indexes"
+      "table": "rates"
     },
     {
       "nameExplicit": true,
@@ -390,166 +479,9 @@
       "method": "btree",
       "concurrently": false,
       "name": "rates_date",
+      "entityType": "indexes",
       "schema": "public",
-      "table": "rates",
-      "entityType": "indexes"
-    },
-    {
-      "nameExplicit": false,
-      "columns": ["from_currency"],
-      "schemaTo": "public",
-      "tableTo": "currencies",
-      "columnsTo": ["code"],
-      "onUpdate": "NO ACTION",
-      "onDelete": "NO ACTION",
-      "name": "rates_from_currency_currencies_code_fk",
-      "schema": "public",
-      "table": "rates",
-      "entityType": "fks"
-    },
-    {
-      "nameExplicit": false,
-      "columns": ["to_currency"],
-      "schemaTo": "public",
-      "tableTo": "currencies",
-      "columnsTo": ["code"],
-      "onUpdate": "NO ACTION",
-      "onDelete": "NO ACTION",
-      "name": "rates_to_currency_currencies_code_fk",
-      "schema": "public",
-      "table": "rates",
-      "entityType": "fks"
-    },
-    {
-      "isRlsEnabled": false,
-      "name": "tickers",
-      "schema": "public",
-      "entityType": "tables"
-    },
-    {
-      "columns": ["id"],
-      "nameExplicit": false,
-      "name": "tickers_pkey",
-      "schema": "public",
-      "table": "tickers",
-      "entityType": "pks"
-    },
-    {
-      "type": "serial",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "id",
-      "schema": "public",
-      "table": "tickers",
-      "entityType": "columns"
-    },
-    {
-      "type": "varchar(255)",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "symbol",
-      "schema": "public",
-      "table": "tickers",
-      "entityType": "columns"
-    },
-    {
-      "type": "varchar(255)",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "name",
-      "schema": "public",
-      "table": "tickers",
-      "entityType": "columns"
-    },
-    {
-      "type": "ticker_types",
-      "typeSchema": "public",
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "type",
-      "schema": "public",
-      "table": "tickers",
-      "entityType": "columns"
-    },
-    {
-      "type": "varchar(10)",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "currency",
-      "schema": "public",
-      "table": "tickers",
-      "entityType": "columns"
-    },
-    {
-      "type": "source_types",
-      "typeSchema": "public",
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "source",
-      "schema": "public",
-      "table": "tickers",
-      "entityType": "columns"
-    },
-    {
-      "type": "varchar(100)",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "source_id",
-      "schema": "public",
-      "table": "tickers",
-      "entityType": "columns"
-    },
-    {
-      "type": "boolean",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "true",
-      "generated": null,
-      "identity": null,
-      "name": "active",
-      "schema": "public",
-      "table": "tickers",
-      "entityType": "columns"
-    },
-    {
-      "type": "timestamp",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "now()",
-      "generated": null,
-      "identity": null,
-      "name": "created_at",
-      "schema": "public",
-      "table": "tickers",
-      "entityType": "columns"
+      "table": "rates"
     },
     {
       "nameExplicit": true,
@@ -575,9 +507,9 @@
       "method": "btree",
       "concurrently": false,
       "name": "tickers_source_id",
+      "entityType": "indexes",
       "schema": "public",
-      "table": "tickers",
-      "entityType": "indexes"
+      "table": "tickers"
     },
     {
       "nameExplicit": true,
@@ -596,21 +528,89 @@
       "method": "btree",
       "concurrently": false,
       "name": "tickers_symbol",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "tickers"
+    },
+    {
+      "nameExplicit": false,
+      "columns": ["ticker_id"],
+      "schemaTo": "public",
+      "tableTo": "tickers",
+      "columnsTo": ["id"],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "prices_ticker_id_tickers_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "prices"
+    },
+    {
+      "nameExplicit": false,
+      "columns": ["from_currency"],
+      "schemaTo": "public",
+      "tableTo": "currencies",
+      "columnsTo": ["code"],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "rates_from_currency_currencies_code_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "rates"
+    },
+    {
+      "nameExplicit": false,
+      "columns": ["to_currency"],
+      "schemaTo": "public",
+      "tableTo": "currencies",
+      "columnsTo": ["code"],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "rates_to_currency_currencies_code_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "rates"
+    },
+    {
+      "columns": ["id"],
+      "nameExplicit": false,
+      "name": "currencies_pkey",
+      "schema": "public",
+      "table": "currencies",
+      "entityType": "pks"
+    },
+    {
+      "columns": ["id"],
+      "nameExplicit": false,
+      "name": "prices_pkey",
+      "schema": "public",
+      "table": "prices",
+      "entityType": "pks"
+    },
+    {
+      "columns": ["id"],
+      "nameExplicit": false,
+      "name": "rates_pkey",
+      "schema": "public",
+      "table": "rates",
+      "entityType": "pks"
+    },
+    {
+      "columns": ["id"],
+      "nameExplicit": false,
+      "name": "tickers_pkey",
       "schema": "public",
       "table": "tickers",
-      "entityType": "indexes"
+      "entityType": "pks"
     },
     {
-      "values": ["yahoo", "coingecko"],
-      "name": "source_types",
+      "nameExplicit": false,
+      "columns": ["code"],
+      "nullsNotDistinct": false,
+      "name": "currencies_code_key",
       "schema": "public",
-      "entityType": "enums"
-    },
-    {
-      "values": ["stock", "etf", "crypto", "commodity"],
-      "name": "ticker_types",
-      "schema": "public",
-      "entityType": "enums"
+      "table": "currencies",
+      "entityType": "uniques"
     }
   ],
   "renames": []

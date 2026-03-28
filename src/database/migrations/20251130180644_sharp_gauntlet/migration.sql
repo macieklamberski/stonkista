@@ -1,1 +1,0 @@
-ALTER TABLE "prices" ALTER COLUMN "ticker_id" SET DATA TYPE integer;
