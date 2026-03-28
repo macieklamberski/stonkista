@@ -8,7 +8,7 @@ node_modules
 # Environment
 .env*
 !.env.example
-!.docker/.env.example
+!.docker/.env.*.example
 
 # Other
 src/backfill
