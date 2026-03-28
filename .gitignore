@@ -10,6 +10,9 @@ node_modules
 !.env.example
 !.docker/.env.*.example
 
+# Tasks (local-only scripts)
+src/tasks
+
 # Other
 src/backfill
 plans
