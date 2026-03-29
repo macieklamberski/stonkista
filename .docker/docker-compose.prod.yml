@@ -6,8 +6,6 @@ services:
     build:
       context: ..
       dockerfile: apps/website/.docker/Dockerfile.prod
-    ports:
-      - 80:80
     depends_on:
       - stonkista
     networks:
