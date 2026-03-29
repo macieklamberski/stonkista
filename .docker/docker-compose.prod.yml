@@ -1,11 +1,24 @@
 name: stonkista
 
 services:
-  stonkista:
-    image: stonkista:prod
+  website:
+    image: stonkista/website:prod
     build:
       context: ..
-      dockerfile: .docker/Dockerfile.prod
+      dockerfile: apps/website/.docker/Dockerfile.prod
+    ports:
+      - "80:80"
+    depends_on:
+      - stonkista
+    networks:
+      - default
+      - dokploy-network
+
+  stonkista:
+    image: stonkista/backend:prod
+    build:
+      context: ..
+      dockerfile: apps/backend/.docker/Dockerfile.prod
     environment:
       DATABASE_HOST: ${DATABASE_HOST}
       DATABASE_PORT: ${DATABASE_PORT}

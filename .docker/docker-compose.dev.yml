@@ -1,12 +1,32 @@
 name: stonkista
 
 services:
+  website:
+    image: stonkista/website:dev
+    pull_policy: build
+    build:
+      context: ../apps/website
+      dockerfile: .docker/Dockerfile.dev
+    ports:
+      - ${WEBSITE_PORT}:3000
+    develop:
+      watch:
+        - action: sync
+          path: ../apps/website
+          target: /home/bun/apps/website
+          ignore:
+            - node_modules
+        - action: rebuild
+          path: ../bun.lock
+    depends_on:
+      - stonkista
+
   stonkista:
-    image: stonkista:dev
+    image: stonkista/backend:dev
     pull_policy: build
     build:
       context: ..
-      dockerfile: .docker/Dockerfile.dev
+      dockerfile: apps/backend/.docker/Dockerfile.dev
     environment:
       DATABASE_HOST: ${DATABASE_HOST}
       DATABASE_PORT: ${DATABASE_PORT}

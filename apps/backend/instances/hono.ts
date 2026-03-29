@@ -8,7 +8,7 @@ import { forexRoutes } from '../routes/forex.ts'
 export const hono = new Hono()
 
 hono.use(trimTrailingSlash())
-hono.use('/static/*', serveStatic({ root: './' }))
+hono.use('/static/*', serveStatic({ root: './apps/backend/' }))
 
 hono.get('/', (context) =>
   context.redirect('https://github.com/macieklamberski/stonkista/blob/main/README.md'),
