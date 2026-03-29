@@ -5,8 +5,8 @@ services:
     image: stonkista/website:dev
     pull_policy: build
     build:
-      context: ../apps/website
-      dockerfile: .docker/Dockerfile.dev
+      context: ..
+      dockerfile: apps/website/.docker/Dockerfile.dev
     ports:
       - ${WEBSITE_PORT}:3000
     develop:

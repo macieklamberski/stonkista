@@ -1,12 +1,11 @@
 FROM oven/bun:alpine AS builder
-WORKDIR /home/bun
+WORKDIR /home/bun/apps/website
 
-COPY package.json bun.lock ./
-COPY apps/website/package.json apps/website/package.json
-RUN bun install --frozen-lockfile --filter @stonkista/website
+COPY apps/website/package.json ./
+RUN bun install
 
-COPY apps/website apps/website
-RUN bun run --cwd apps/website build
+COPY apps/website .
+RUN bun run build
 
 FROM nginx:alpine
 COPY --from=builder /home/bun/apps/website/dist /usr/share/nginx/html
