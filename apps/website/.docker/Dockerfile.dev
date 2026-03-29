@@ -1,0 +1,9 @@
+FROM oven/bun:alpine
+WORKDIR /home/bun
+
+COPY package.json ./
+RUN bun install
+
+COPY . .
+
+CMD ["bun", "run", "dev", "--host"]
