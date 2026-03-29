@@ -23,4 +23,4 @@ jobs:
         run: bunx tsc --noEmit
 
       - name: Run tests
-        run: bun test
+        run: bun test --cwd apps/backend

@@ -11,8 +11,11 @@ node_modules
 !.docker/.env.*.example
 
 # Tasks (local-only scripts)
-src/tasks
+apps/backend/tasks
+
+# Build
+dist
+*.tsbuildinfo
 
 # Other
-src/backfill
 plans

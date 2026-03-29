@@ -22,8 +22,8 @@ services:
     develop:
       watch:
         - action: sync
-          path: ..
-          target: /home/bun
+          path: ../apps/backend
+          target: /home/bun/apps/backend
         - action: rebuild
           path: ../bun.lock
     depends_on:

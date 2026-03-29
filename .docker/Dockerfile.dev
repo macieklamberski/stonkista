@@ -4,6 +4,6 @@ WORKDIR /home/bun
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile --ignore-scripts
 
-COPY src src
+COPY apps/backend apps/backend
 
-CMD ["bun", "--watch", "src/index.ts"]
+CMD ["bun", "--watch", "apps/backend/index.ts"]

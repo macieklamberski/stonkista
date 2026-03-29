@@ -8,6 +8,6 @@ FROM oven/bun:alpine
 WORKDIR /home/bun
 
 COPY --from=builder /home/bun/node_modules node_modules
-COPY src src
+COPY apps/backend apps/backend
 
-CMD ["bun", "src/index.ts"]
+CMD ["bun", "apps/backend/index.ts"]
