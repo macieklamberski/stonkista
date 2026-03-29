@@ -10,10 +10,6 @@ export const hono = new Hono()
 hono.use(trimTrailingSlash())
 hono.use('/static/*', serveStatic({ root: './apps/backend/' }))
 
-hono.get('/', (context) =>
-  context.redirect('https://github.com/macieklamberski/stonkista/blob/main/README.md'),
-)
-
 hono.route('/forex', forexRoutes)
 hono.route('/crypto', cryptoRoutes)
 hono.route('/', equitiesRoutes)
