@@ -5,8 +5,10 @@ import type { DatedPrice, Rate } from '../types/schemas.ts'
 import { formatDate, generateDateRange } from './dates.ts'
 import { findOrSkip } from './queries.ts'
 
+const CURRENCY_CODE_REGEX = /^[A-Z]{3}$/i
+
 export const isCurrencyCode = (value: string): boolean => {
-  return /^[A-Z]{3}$/i.test(value)
+  return CURRENCY_CODE_REGEX.test(value)
 }
 
 export const findRate = async (

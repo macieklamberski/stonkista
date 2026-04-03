@@ -37,7 +37,7 @@ equitiesRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
   if (!ticker) {
     const data = await fetchHistorical(symbol)
 
-    if (!data || !data.name || !data.type) {
+    if (!data?.name || !data.type) {
       return context.notFound()
     }
 
@@ -104,7 +104,7 @@ equitiesRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
     )
   }
 
-  if (!priceData || !priceData.available || priceData.price === null) {
+  if (!priceData?.available || priceData.price === null) {
     return context.notFound()
   }
 

@@ -2,6 +2,8 @@ import { describe, expect, it } from 'bun:test'
 import type { DateParam, ParsedCurrencyDateParams } from './params.ts'
 import { parseCurrencyDateParams, parseDateParam } from './params.ts'
 
+const DATE_FORMAT_REGEX = /^\d{4}-\d{2}-\d{2}$/
+
 describe('parseDateParam', () => {
   it('should return date for valid YYYY-MM-DD string', () => {
     const expected: DateParam = { date: '2024-01-15' }
@@ -51,7 +53,7 @@ describe('parseCurrencyDateParams', () => {
   it('should return today with no currency when no args provided', () => {
     expect(parseCurrencyDateParams()).toEqual({
       currency: undefined,
-      date: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
+      date: expect.stringMatching(DATE_FORMAT_REGEX),
     })
   })
 
@@ -76,7 +78,7 @@ describe('parseCurrencyDateParams', () => {
   it('should return today with uppercased currency for currency-only arg', () => {
     expect(parseCurrencyDateParams('pln')).toEqual({
       currency: 'PLN',
-      date: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
+      date: expect.stringMatching(DATE_FORMAT_REGEX),
     })
   })
 

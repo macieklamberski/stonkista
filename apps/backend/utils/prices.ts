@@ -4,12 +4,14 @@ import { db } from '../instances/database.ts'
 import type { DatedPrice, NewPrice } from '../types/schemas.ts'
 import { formatDate, generateDateRange } from './dates.ts'
 
+const TRAILING_ZEROS_REGEX = /\.?0+$/
+
 const stripTrailingZeros = (value: string) => {
   if (!value.includes('.')) {
     return value
   }
 
-  return value.replace(/\.?0+$/, '')
+  return value.replace(TRAILING_ZEROS_REGEX, '')
 }
 
 export const formatPrice = (price: string | number | null, locale?: string) => {
@@ -18,7 +20,7 @@ export const formatPrice = (price: string | number | null, locale?: string) => {
   }
 
   const significantDigits = 10
-  const num = typeof price === 'string' ? parseFloat(price) : price
+  const num = typeof price === 'string' ? Number.parseFloat(price) : price
 
   if (num === 0 || !Number.isFinite(num)) {
     return '0'

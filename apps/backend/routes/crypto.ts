@@ -102,7 +102,7 @@ cryptoRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
     )
   }
 
-  if (!priceData || !priceData.available || priceData.price === null) {
+  if (!priceData?.available || priceData.price === null) {
     return context.notFound()
   }
 

@@ -9,6 +9,8 @@ import {
   parseDateRange,
 } from './dates.ts'
 
+const DATE_FORMAT_REGEX = /^\d{4}-\d{2}-\d{2}$/
+
 describe('isValidDate', () => {
   it('should return true for valid YYYY-MM-DD format', () => {
     expect(isValidDate('2024-01-15')).toBe(true)
@@ -43,7 +45,7 @@ describe('isValidDate', () => {
 
 describe('formatDate', () => {
   it('should format timestamp to YYYY-MM-DD', () => {
-    expect(formatDate(1705320000000)).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+    expect(formatDate(1705320000000)).toMatch(DATE_FORMAT_REGEX)
   })
 
   it('should format Date object to YYYY-MM-DD', () => {
@@ -53,7 +55,7 @@ describe('formatDate', () => {
 
 describe('getToday', () => {
   it('should return date in YYYY-MM-DD format', () => {
-    expect(getToday()).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+    expect(getToday()).toMatch(DATE_FORMAT_REGEX)
   })
 })
 

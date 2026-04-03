@@ -46,9 +46,9 @@ describe('isCurrencyCode', () => {
 
 describe('convertPrice', () => {
   const mockRates = (ratesMap: Record<string, string>) => {
-    spyOn(currency, 'findRate').mockImplementation(async (from: string, to: string) => {
+    spyOn(currency, 'findRate').mockImplementation((from: string, to: string) => {
       const rate = ratesMap[`${from}-${to}`]
-      return rate ? ({ rate } as Rate) : undefined
+      return Promise.resolve(rate ? ({ rate } as Rate) : undefined)
     })
   }
 
@@ -168,8 +168,8 @@ describe('findRatesInRange', () => {
   const mockFetchRateSeries = (
     seriesMap: Record<string, Array<{ date: string; rate: number }>>,
   ) => {
-    spyOn(currency, 'fetchRateSeries').mockImplementation(async (from: string, to: string) => {
-      return seriesMap[`${from}-${to}`] ?? []
+    spyOn(currency, 'fetchRateSeries').mockImplementation((from: string, to: string) => {
+      return Promise.resolve(seriesMap[`${from}-${to}`] ?? [])
     })
   }
 
@@ -266,8 +266,8 @@ describe('convertPrices', () => {
   const mockFetchRateSeries = (
     seriesMap: Record<string, Array<{ date: string; rate: number }>>,
   ) => {
-    spyOn(currency, 'fetchRateSeries').mockImplementation(async (from: string, to: string) => {
-      return seriesMap[`${from}-${to}`] ?? []
+    spyOn(currency, 'fetchRateSeries').mockImplementation((from: string, to: string) => {
+      return Promise.resolve(seriesMap[`${from}-${to}`] ?? [])
     })
   }
 
