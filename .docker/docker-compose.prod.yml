@@ -11,6 +11,7 @@ services:
     networks:
       - default
       - dokploy-network
+    restart: always
 
   stonkista:
     image: stonkista/backend:prod
@@ -35,6 +36,7 @@ services:
     networks:
       - default
       - dokploy-network
+    restart: always
 
   bastion:
     image: linuxserver/openssh-server
@@ -47,6 +49,7 @@ services:
       DOCKER_MODS: linuxserver/mods:openssh-server-ssh-tunnel
     ports:
       - ${BASTION_PORT}:${BASTION_PORT}
+    restart: always
 
   postgres:
     image: postgres:18-alpine
@@ -55,7 +58,8 @@ services:
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASS}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
+    restart: always
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U ${DATABASE_USER} -d ${DATABASE_NAME}']
       interval: 5s
@@ -66,6 +70,7 @@ services:
     image: redis:8-alpine
     volumes:
       - redis_data:/data
+    restart: always
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       interval: 5s
@@ -87,6 +92,7 @@ services:
     networks:
       - default
       - dokploy-network
+    restart: always
 
 networks:
   dokploy-network:
