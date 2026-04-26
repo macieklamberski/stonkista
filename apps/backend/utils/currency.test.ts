@@ -55,99 +55,81 @@ describe('convertPrice', () => {
   beforeEach(() => mock.restore())
 
   it('should return same price when currencies are equal', async () => {
-    const result = await convertPrice(100, 'USD', 'USD', '2024-01-15')
-
-    expect(result).toBe(100)
+    expect(await convertPrice(100, 'USD', 'USD', '2024-01-15')).toBe(100)
   })
 
   it('should convert using direct rate', async () => {
     mockRates({ 'USD-PLN': '4.5' })
 
-    const result = await convertPrice(100, 'USD', 'PLN', '2024-01-15')
-
-    expect(result).toBe(450)
+    expect(await convertPrice(100, 'USD', 'PLN', '2024-01-15')).toBe(450)
   })
 
   it('should convert using inverse rate when direct not found', async () => {
     mockRates({ 'PLN-USD': '0.25' })
 
-    const result = await convertPrice(100, 'USD', 'PLN', '2024-01-15')
-
-    expect(result).toBe(400)
+    expect(await convertPrice(100, 'USD', 'PLN', '2024-01-15')).toBe(400)
   })
 
   it('should convert through EUR intermediate when no direct/inverse rate', async () => {
     mockRates({ 'EUR-USD': '1.1', 'EUR-PLN': '4.5' })
 
-    const result = await convertPrice(100, 'USD', 'PLN', '2024-01-15')
-
-    expect(result).toBeCloseTo(409.09, 1)
+    expect(await convertPrice(100, 'USD', 'PLN', '2024-01-15')).toBeCloseTo(409.09, 1)
   })
 
   it('should return undefined when no conversion path found', async () => {
     mockRates({})
 
-    const result = await convertPrice(100, 'USD', 'PLN', '2024-01-15')
-
-    expect(result).toBeUndefined()
+    expect(await convertPrice(100, 'USD', 'PLN', '2024-01-15')).toBeUndefined()
   })
 
   it('should handle case-insensitive currency codes', async () => {
     mockRates({ 'USD-PLN': '4.5' })
 
-    const result = await convertPrice(100, 'usd', 'pln', '2024-01-15')
-
-    expect(result).toBe(450)
+    expect(await convertPrice(100, 'usd', 'pln', '2024-01-15')).toBe(450)
   })
 
   it('should return zero when price is zero', async () => {
     mockRates({ 'USD-PLN': '4.5' })
 
-    const result = await convertPrice(0, 'USD', 'PLN', '2024-01-15')
-
-    expect(result).toBe(0)
+    expect(await convertPrice(0, 'USD', 'PLN', '2024-01-15')).toBe(0)
   })
 
   it('should skip EUR intermediate when from currency is EUR', async () => {
     mockRates({ 'EUR-PLN': '4.5' })
 
-    const result = await convertPrice(100, 'EUR', 'PLN', '2024-01-15')
-
-    expect(result).toBe(450)
+    expect(await convertPrice(100, 'EUR', 'PLN', '2024-01-15')).toBe(450)
   })
 
   it('should skip EUR intermediate when to currency is EUR', async () => {
     mockRates({ 'USD-EUR': '0.9' })
 
-    const result = await convertPrice(100, 'USD', 'EUR', '2024-01-15')
-
-    expect(result).toBe(90)
+    expect(await convertPrice(100, 'USD', 'EUR', '2024-01-15')).toBe(90)
   })
 })
 
 describe('findLatestRate', () => {
   it('should return rate for exact date match', () => {
-    const series = [
+    const value = [
       { date: '2024-01-01', rate: 4.5 },
       { date: '2024-01-02', rate: 4.6 },
     ]
 
-    expect(findLatestRate(series, '2024-01-01')).toBe(4.5)
+    expect(findLatestRate(value, '2024-01-01')).toBe(4.5)
   })
 
   it('should return latest rate on or before date', () => {
-    const series = [
+    const value = [
       { date: '2024-01-01', rate: 4.5 },
       { date: '2024-01-03', rate: 4.6 },
     ]
 
-    expect(findLatestRate(series, '2024-01-02')).toBe(4.5)
+    expect(findLatestRate(value, '2024-01-02')).toBe(4.5)
   })
 
   it('should return undefined when no rate on or before date', () => {
-    const series = [{ date: '2024-01-05', rate: 4.5 }]
+    const value = [{ date: '2024-01-05', rate: 4.5 }]
 
-    expect(findLatestRate(series, '2024-01-02')).toBeUndefined()
+    expect(findLatestRate(value, '2024-01-02')).toBeUndefined()
   })
 
   it('should return undefined for empty series', () => {
@@ -155,12 +137,12 @@ describe('findLatestRate', () => {
   })
 
   it('should return last matching rate when multiple match', () => {
-    const series = [
+    const value = [
       { date: '2024-01-01', rate: 4.5 },
       { date: '2024-01-01', rate: 4.6 },
     ]
 
-    expect(findLatestRate(series, '2024-01-01')).toBe(4.6)
+    expect(findLatestRate(value, '2024-01-01')).toBe(4.6)
   })
 })
 
@@ -278,7 +260,7 @@ describe('convertPrices', () => {
       'EUR-USD': [{ date: '2024-01-01', rate: 1.1 }],
       'EUR-PLN': [{ date: '2024-01-01', rate: 4.5 }],
     })
-    const entries = [
+    const value = [
       { date: '2024-01-01', price: 100 },
       { date: '2024-01-02', price: 200 },
     ]
@@ -287,7 +269,7 @@ describe('convertPrices', () => {
       { date: '2024-01-02', price: expect.closeTo(818.18, 1) },
     ]
 
-    expect(await convertPrices(entries, 'USD', 'PLN')).toEqual(expected)
+    expect(await convertPrices(value, 'USD', 'PLN')).toEqual(expected)
   })
 
   it('should return null for entries where conversion fails', async () => {
@@ -295,7 +277,7 @@ describe('convertPrices', () => {
       'EUR-USD': [{ date: '2024-01-01', rate: 1.1 }],
       'EUR-PLN': [{ date: '2024-01-02', rate: 4.5 }],
     })
-    const entries = [
+    const value = [
       { date: '2024-01-01', price: 100 },
       { date: '2024-01-02', price: 200 },
     ]
@@ -304,14 +286,14 @@ describe('convertPrices', () => {
       { date: '2024-01-02', price: expect.closeTo(818.18, 1) },
     ]
 
-    expect(await convertPrices(entries, 'USD', 'PLN')).toEqual(expected)
+    expect(await convertPrices(value, 'USD', 'PLN')).toEqual(expected)
   })
 
   it('should pass through null prices', async () => {
     mockFetchRateSeries({
       'EUR-PLN': [{ date: '2024-01-01', rate: 4.5 }],
     })
-    const entries = [
+    const value = [
       { date: '2024-01-01', price: null },
       { date: '2024-01-02', price: 100 },
     ]
@@ -320,16 +302,16 @@ describe('convertPrices', () => {
       { date: '2024-01-02', price: 450 },
     ]
 
-    expect(await convertPrices(entries, 'EUR', 'PLN')).toEqual(expected)
+    expect(await convertPrices(value, 'EUR', 'PLN')).toEqual(expected)
   })
 
   it('should return same prices when currencies are equal', async () => {
-    const entries = [
+    const value = [
       { date: '2024-01-01', price: 100 },
       { date: '2024-01-02', price: 200 },
     ]
 
-    expect(await convertPrices(entries, 'USD', 'USD')).toEqual(entries)
+    expect(await convertPrices(value, 'USD', 'USD')).toEqual(value)
   })
 
   it('should return empty array for empty input', async () => {
@@ -340,9 +322,9 @@ describe('convertPrices', () => {
     mockFetchRateSeries({
       'EUR-PLN': [{ date: '2024-01-01', rate: 4.5 }],
     })
-    const entries = [{ date: '2024-01-01', price: 100 }]
+    const value = [{ date: '2024-01-01', price: 100 }]
     const expected = [{ date: '2024-01-01', price: 450 }]
 
-    expect(await convertPrices(entries, 'EUR', 'PLN')).toEqual(expected)
+    expect(await convertPrices(value, 'EUR', 'PLN')).toEqual(expected)
   })
 })

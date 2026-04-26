@@ -83,21 +83,21 @@ describe('formatPrice', () => {
 
 describe('hasPrices', () => {
   it('should return true when at least one entry has a price', () => {
-    const entries = [
+    const value = [
       { date: '2024-01-01', price: null },
       { date: '2024-01-02', price: 100 },
     ]
 
-    expect(hasPrices(entries)).toBe(true)
+    expect(hasPrices(value)).toBe(true)
   })
 
   it('should return false when all entries have null prices', () => {
-    const entries = [
+    const value = [
       { date: '2024-01-01', price: null },
       { date: '2024-01-02', price: null },
     ]
 
-    expect(hasPrices(entries)).toBe(false)
+    expect(hasPrices(value)).toBe(false)
   })
 
   it('should return false for empty array', () => {
@@ -105,16 +105,16 @@ describe('hasPrices', () => {
   })
 })
 
-const row = (date: string, price: string | null) => ({
-  id: 1,
-  tickerId: 1,
-  date,
-  price,
-  available: true,
-  fetchedAt: new Date(),
-})
-
 describe('findPricesInRange', () => {
+  const row = (date: string, price: string | null) => ({
+    id: 1,
+    tickerId: 1,
+    date,
+    price,
+    available: true,
+    fetchedAt: new Date(),
+  })
+
   beforeEach(() => {
     mockDbRows = []
   })

@@ -51,10 +51,12 @@ describe('parseDateParam', () => {
 
 describe('parseCurrencyDateParams', () => {
   it('should return today with no currency when no args provided', () => {
-    expect(parseCurrencyDateParams()).toEqual({
+    const expected = {
       currency: undefined,
       date: expect.stringMatching(DATE_FORMAT_REGEX),
-    })
+    }
+
+    expect(parseCurrencyDateParams()).toEqual(expected)
   })
 
   it('should return date with no currency for date-only arg', () => {
@@ -76,10 +78,12 @@ describe('parseCurrencyDateParams', () => {
   })
 
   it('should return today with uppercased currency for currency-only arg', () => {
-    expect(parseCurrencyDateParams('pln')).toEqual({
+    const expected = {
       currency: 'PLN',
       date: expect.stringMatching(DATE_FORMAT_REGEX),
-    })
+    }
+
+    expect(parseCurrencyDateParams('pln')).toEqual(expected)
   })
 
   it('should return date with currency when both provided', () => {

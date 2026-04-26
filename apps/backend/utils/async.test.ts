@@ -11,8 +11,6 @@ describe('sleep', () => {
   })
 
   it('should resolve with undefined', async () => {
-    const result = await sleep(0)
-
-    expect(result).toBeUndefined()
+    expect(await sleep(0)).toBeUndefined()
   })
 })
