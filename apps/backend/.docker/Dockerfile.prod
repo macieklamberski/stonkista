@@ -1,8 +1,11 @@
+# syntax=docker/dockerfile:1-labs
 FROM oven/bun:alpine AS builder
 WORKDIR /home/bun
 
-COPY package.json bun.lock ./
-RUN bun install --frozen-lockfile --ignore-scripts --production
+COPY package.json bun.lock bunfig.toml ./
+COPY --parents ./apps/*/package.json ./
+
+RUN bun install --frozen-lockfile --filter @stonkista/backend --production
 
 FROM oven/bun:alpine
 WORKDIR /home/bun
@@ -10,4 +13,5 @@ WORKDIR /home/bun
 COPY --from=builder /home/bun/node_modules node_modules
 COPY apps/backend apps/backend
 
-CMD ["bun", "apps/backend/index.ts"]
+WORKDIR /home/bun/apps/backend
+CMD ["bun", "index.ts"]

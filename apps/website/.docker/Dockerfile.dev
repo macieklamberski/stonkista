@@ -1,9 +1,13 @@
+# syntax=docker/dockerfile:1-labs
 FROM oven/bun:alpine
+WORKDIR /home/bun
+
+COPY package.json bun.lock bunfig.toml ./
+COPY --parents ./apps/*/package.json ./
+
+RUN bun install --frozen-lockfile --filter @stonkista/website
+
+COPY apps/website apps/website
+
 WORKDIR /home/bun/apps/website
-
-COPY apps/website/package.json ./
-RUN bun install
-
-COPY apps/website .
-
 CMD ["bun", "run", "dev", "--host"]
