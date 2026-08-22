@@ -61,7 +61,7 @@ services:
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASS}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
     healthcheck:
       test: ['CMD', 'pg_isready', '-U', '${DATABASE_USER}', '-d', '${DATABASE_NAME}']
       interval: 2s
