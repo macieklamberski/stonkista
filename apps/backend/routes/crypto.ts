@@ -2,7 +2,7 @@ import { and, desc, eq, lte } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { prices, tickers } from '../database/tables.ts'
 import { db } from '../instances/database.ts'
-import { fetchHistorical } from '../sources/cryptocompare.ts'
+import { fetchCoinsBySymbol, fetchHistorical, findCoin } from '../sources/coinstats.ts'
 import { convertPrice, convertPrices } from '../utils/currency.ts'
 import { getToday } from '../utils/dates.ts'
 import { parseCurrencyDateParams } from '../utils/params.ts'
@@ -33,9 +33,17 @@ cryptoRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
       .limit(1),
   )
 
-  // Lazy load from CryptoCompare if ticker not found.
+  // Lazy load from CoinStats if ticker not found.
   if (!ticker) {
-    const data = await fetchHistorical(symbol.toUpperCase())
+    // CoinStats keys by an opaque id, so the symbol has to be resolved first.
+    // Several coins can share a symbol; findCoin takes the largest by market cap.
+    const coin = findCoin(await fetchCoinsBySymbol(symbol.toUpperCase()), symbol.toUpperCase())
+
+    if (!coin) {
+      return context.notFound()
+    }
+
+    const data = await fetchHistorical(coin.id)
 
     if (!data || data.prices.length === 0) {
       return context.notFound()
@@ -45,10 +53,11 @@ cryptoRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
       .insert(tickers)
       .values({
         symbol: symbol.toUpperCase(),
+        name: coin.name,
         type: 'crypto',
         currency: 'USD',
-        source: 'cryptocompare',
-        sourceId: symbol.toUpperCase(),
+        source: 'coinstats',
+        sourceId: coin.id,
       })
       .returning()
 

@@ -1,9 +1,9 @@
-import { fetchCryptocompare } from '../jobs/fetchCryptocompare.ts'
+import { fetchCoinstats } from '../jobs/fetchCoinstats.ts'
 import { createQueue } from '../utils/queues.ts'
 
-export const cryptocompareQueue = createQueue(
-  'cryptocompare',
-  { fetchCryptocompare },
+export const coinstatsQueue = createQueue(
+  'coinstats',
+  { fetchCoinstats },
   {
     queue: {
       defaultJobOptions: {

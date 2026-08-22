@@ -13,7 +13,12 @@ import {
 } from 'drizzle-orm/pg-core'
 
 export const tickerType = pgEnum('ticker_types', ['stock', 'etf', 'crypto', 'commodity'])
-export const sourceType = pgEnum('source_types', ['yahoo', 'coingecko', 'cryptocompare'])
+export const sourceType = pgEnum('source_types', [
+  'yahoo',
+  'coingecko',
+  'cryptocompare',
+  'coinstats',
+])
 
 export const tickers = pgTable(
   'tickers',
