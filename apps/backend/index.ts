@@ -4,7 +4,7 @@ import * as serverConstants from './constants/server.ts'
 import { db } from './instances/database.ts'
 import { hono } from './instances/hono.ts'
 
-import './queues/cryptocompare.ts'
+import './queues/coinstats.ts'
 import './queues/currencies.ts'
 import './queues/frankfurter.ts'
 import './queues/sync.ts'
