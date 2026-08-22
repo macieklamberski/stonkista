@@ -10,6 +10,6 @@
     "dev": "docker compose -f .docker/docker-compose.dev.yml --env-file .docker/.env.dev up --watch"
   },
   "devDependencies": {
-    "kvalita": "^1.13.0"
+    "kvalita": "^1.16.0"
   }
 }

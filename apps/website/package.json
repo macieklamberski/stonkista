@@ -8,12 +8,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.2.2",
-    "preact": "^10.25.4",
-    "tailwindcss": "^4.2.2"
+    "@tailwindcss/vite": "^4.3.3",
+    "preact": "^10.29.8",
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
-    "@preact/preset-vite": "^2.10.5",
-    "vite": "^8.0.3"
+    "@preact/preset-vite": "^2.10.6",
+    "vite": "^8.2.2"
   }
 }
