@@ -11,6 +11,17 @@ import { findOrSkip } from '../utils/queries.ts'
 
 export const equitiesRoutes = new Hono()
 
+// Equities are mounted at the root, so every unmatched path arrives here and
+// would otherwise be looked up as a ticker. Crawlers asking for favicon.ico or
+// sitemap.xml were reaching Yahoo. Symbols may contain dots (BRK.B, 0700.HK),
+// so only known asset extensions are rejected.
+const ASSET_PATH_REGEX =
+  /\.(?:xml|txt|ico|png|jpe?g|gif|svg|webp|avif|css|js|mjs|map|json|webmanifest|woff2?|ttf|pdf|env|php)$/i
+
+export const isAssetPath = (symbol: string): boolean => {
+  return ASSET_PATH_REGEX.test(symbol)
+}
+
 // GET /:ticker
 // GET /:ticker/:currencyOrDate
 // GET /:ticker/:currency/:date
@@ -21,7 +32,7 @@ equitiesRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
   const locale = context.req.query('locale')
   const params = parseCurrencyDateParams(currencyOrDate, date)
 
-  if (!params) {
+  if (!params || isAssetPath(symbol)) {
     return context.notFound()
   }
 
