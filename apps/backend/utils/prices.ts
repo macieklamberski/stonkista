@@ -62,6 +62,7 @@ export const upsertPrice = async (params: UpsertPriceParams) => {
       date: params.date,
       price,
       available: params.available,
+      source: params.source,
       fetchedAt: new Date(),
     })
     .onConflictDoUpdate({

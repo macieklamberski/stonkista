@@ -44,6 +44,7 @@ export const prices = pgTable(
     date: date('date').notNull(),
     price: decimal('price', { precision: 32, scale: 16 }),
     available: boolean('available').notNull().default(true),
+    source: sourceType('source').notNull(),
     fetchedAt: timestamp('fetched_at').notNull().defaultNow(),
   },
   (table) => [

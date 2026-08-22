@@ -59,6 +59,7 @@ equitiesRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
         date: price.date,
         price: price.price,
         available: true,
+        source: newTicker.source,
       })
     }
 
