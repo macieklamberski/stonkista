@@ -4,4 +4,4 @@ import { createQueue } from '../utils/queues.ts'
 export const tickersQueue = createQueue('tickers', { scrapeTickers })
 
 // Sync every hour.
-tickersQueue.add('scrapeTickers', undefined, { repeat: { pattern: '0 * * * *' } })
+tickersQueue.upsertJobScheduler('scrapeTickers', { pattern: '0 * * * *' })

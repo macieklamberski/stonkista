@@ -21,4 +21,4 @@ export const syncQueue = createQueue(
 )
 
 // Sync weekly at 00:00.
-syncQueue.add('syncFrankfurter', undefined, { repeat: { pattern: '0 0 * * 0' } })
+syncQueue.upsertJobScheduler('syncFrankfurter', { pattern: '0 0 * * 0' })
