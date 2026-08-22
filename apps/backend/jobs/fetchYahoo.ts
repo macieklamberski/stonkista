@@ -30,6 +30,7 @@ export const fetchYahoo = async (data: FetchYahooData) => {
       date: getToday(),
       price: priceData?.price ?? null,
       available: priceData != null,
+      source: ticker.source,
     })
 
     if (priceData) {
@@ -67,6 +68,7 @@ export const fetchYahoo = async (data: FetchYahooData) => {
       date: priceData.date,
       price: priceData.price,
       available: true,
+      source: ticker.source,
     })
 
     inserted++

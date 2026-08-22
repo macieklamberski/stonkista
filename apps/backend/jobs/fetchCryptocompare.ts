@@ -32,6 +32,7 @@ export const fetchCryptocompare = async (data: FetchCryptocompareData) => {
       date: today,
       price: priceData?.price ?? null,
       available: priceData != null,
+      source: ticker.source,
     })
 
     if (priceData) {
