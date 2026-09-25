@@ -65,10 +65,10 @@ const request = async (url: string): Promise<Response> => {
 
 // Non-ASCII names must survive normalisation. Stripping to [a-z0-9] collapses
 // every CJK name to an empty string, which then matches all the others.
-const NON_ALPHANUMERIC_REGEX = /[^\p{L}\p{N}]/gu
+const nonAlphanumericRegex = /[^\p{L}\p{N}]/gu
 
 export const normalizeName = (name: string | null | undefined): string => {
-  return (name ?? '').toLowerCase().replace(NON_ALPHANUMERIC_REGEX, '')
+  return (name ?? '').toLowerCase().replace(nonAlphanumericRegex, '')
 }
 
 const byMarketCap = (coins: Array<Coin>): Coin | undefined => {

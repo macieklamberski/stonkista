@@ -5,10 +5,10 @@ import type { DatedPrice, Rate } from '../types/schemas.ts'
 import { formatDate, generateDateRange } from './dates.ts'
 import { findOrSkip } from './queries.ts'
 
-const CURRENCY_CODE_REGEX = /^[A-Z]{3}$/i
+const currencyCodeRegex = /^[A-Z]{3}$/i
 
 export const isCurrencyCode = (value: string): boolean => {
-  return CURRENCY_CODE_REGEX.test(value)
+  return currencyCodeRegex.test(value)
 }
 
 export const findRate = async (
@@ -26,16 +26,14 @@ export const findRate = async (
   )
 
   // Fallback to closest previous date (handles weekends/holidays).
-  if (!rate) {
-    rate = await findOrSkip(
-      db
-        .select()
-        .from(rates)
-        .where(and(eq(rates.fromCurrency, from), eq(rates.toCurrency, to), lte(rates.date, date)))
-        .orderBy(desc(rates.date))
-        .limit(1),
-    )
-  }
+  rate ??= await findOrSkip(
+    db
+      .select()
+      .from(rates)
+      .where(and(eq(rates.fromCurrency, from), eq(rates.toCurrency, to), lte(rates.date, date)))
+      .orderBy(desc(rates.date))
+      .limit(1),
+  )
 
   return rate
 }
