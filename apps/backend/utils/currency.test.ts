@@ -48,7 +48,21 @@ describe('convertPrice', () => {
   const mockRates = (ratesMap: Record<string, string>) => {
     spyOn(currency, 'findRate').mockImplementation((from: string, to: string) => {
       const rate = ratesMap[`${from}-${to}`]
-      return Promise.resolve(rate ? ({ rate } as Rate) : undefined)
+
+      if (!rate) {
+        return Promise.resolve(undefined)
+      }
+
+      const row: Rate = {
+        id: 1,
+        date: '2024-01-01',
+        fromCurrency: from,
+        toCurrency: to,
+        rate,
+        fetchedAt: new Date('2024-01-01'),
+      }
+
+      return Promise.resolve(row)
     })
   }
 

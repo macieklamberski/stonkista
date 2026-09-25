@@ -4,14 +4,14 @@ import { db } from '../instances/database.ts'
 import type { DatedPrice, NewPrice } from '../types/schemas.ts'
 import { formatDate, generateDateRange } from './dates.ts'
 
-const TRAILING_ZEROS_REGEX = /\.?0+$/
+const trailingZerosRegex = /\.?0+$/
 
 const stripTrailingZeros = (value: string) => {
   if (!value.includes('.')) {
     return value
   }
 
-  return value.replace(TRAILING_ZEROS_REGEX, '')
+  return value.replace(trailingZerosRegex, '')
 }
 
 export const formatPrice = (price: string | number | null, locale?: string) => {

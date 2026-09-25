@@ -15,11 +15,11 @@ export const equitiesRoutes = new Hono()
 // would otherwise be looked up as a ticker. Crawlers asking for favicon.ico or
 // sitemap.xml were reaching Yahoo. Symbols may contain dots (BRK.B, 0700.HK),
 // so only known asset extensions are rejected.
-const ASSET_PATH_REGEX =
+const assetPathRegex =
   /\.(?:xml|txt|ico|png|jpe?g|gif|svg|webp|avif|css|js|mjs|map|json|webmanifest|woff2?|ttf|pdf|env|php)$/i
 
 export const isAssetPath = (symbol: string): boolean => {
-  return ASSET_PATH_REGEX.test(symbol)
+  return assetPathRegex.test(symbol)
 }
 
 // GET /:ticker

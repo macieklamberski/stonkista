@@ -1,7 +1,7 @@
-const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/
+const dateRegex = /^\d{4}-\d{2}-\d{2}$/
 
 export const isValidDate = (dateString: string): boolean => {
-  if (!DATE_REGEX.test(dateString)) {
+  if (!dateRegex.test(dateString)) {
     return false
   }
 
