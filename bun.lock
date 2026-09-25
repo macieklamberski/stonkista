@@ -5,7 +5,7 @@
     "": {
       "name": "stonkista",
       "devDependencies": {
-        "kvalita": "^1.24.1",
+        "kvalita": "^1.24.3",
       },
     },
     "apps/backend": {
@@ -674,7 +674,7 @@
 
     "kolorist": ["kolorist@1.8.0", "", {}, "sha512-Y+60/zizpJ3HRH8DCss+q95yr6145JXZo46OTpFvDZWLfRCE4qChOyk1b26nMaNpfHHgxagk9dXT5OP0Tfe+dQ=="],
 
-    "kvalita": ["kvalita@1.24.1", "", { "peerDependencies": { "@biomejs/biome": "^2.5.14", "@commitlint/cli": "^20.0.0 || ^21.0.0", "@commitlint/config-conventional": "^20.0.0 || ^21.0.0", "conventional-changelog-conventionalcommits": "^9.0.0", "lefthook": "^2.1.14", "semantic-release": "^24.0.0 || ^25.0.0", "typescript": "^6.0.0 || ^7.0.0" } }, "sha512-QAZAsB75MakaT/sF7Eu+QKXwVcWKLY8ex4DfcF6RXMN1VJER46zzAw8drD2Zmo1whl8kzoQVVoFkJ52Uxz4xxw=="],
+    "kvalita": ["kvalita@1.24.3", "", { "peerDependencies": { "@biomejs/biome": "^2.5.14", "@commitlint/cli": "^20.0.0 || ^21.0.0", "@commitlint/config-conventional": "^20.0.0 || ^21.0.0", "conventional-changelog-conventionalcommits": "^9.0.0", "lefthook": "^2.1.14", "semantic-release": "^24.0.0 || ^25.0.0", "typescript": "^6.0.0 || ^7.0.0" } }, "sha512-N95TKmzhLl1ktImDCpCcBz+iyrc3TVa9EpwKB7maILjJvtywmvV4XlCnRaPAjmpaLUyfK6F1q4bMDSUClLPkqg=="],
 
     "lefthook": ["lefthook@2.1.10", "", { "optionalDependencies": { "lefthook-darwin-arm64": "2.1.10", "lefthook-darwin-x64": "2.1.10", "lefthook-freebsd-arm64": "2.1.10", "lefthook-freebsd-x64": "2.1.10", "lefthook-linux-arm64": "2.1.10", "lefthook-linux-x64": "2.1.10", "lefthook-openbsd-arm64": "2.1.10", "lefthook-openbsd-x64": "2.1.10", "lefthook-windows-arm64": "2.1.10", "lefthook-windows-x64": "2.1.10" }, "bin": { "lefthook": "bin/index.js" } }, "sha512-K7mM4WoqMwqfXYK11EHy+lSH1uW8XHni3Yn/bSqyerPkUPygGdf3xn18JoV5HyA06xuQL3ofGAOjG01QX9oJ4w=="],
 

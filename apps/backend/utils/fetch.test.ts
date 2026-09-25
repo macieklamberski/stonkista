@@ -11,9 +11,9 @@ describe('fetchUrl', () => {
     expect(await fetchUrl('https://example.com')).toBe(value)
   })
 
-  it('should throw when response is not ok', () => {
+  it('should throw when response is not ok', async () => {
     spyOn(globalThis, 'fetch').mockResolvedValue(new Response('', { status: 404 }))
 
-    expect(fetchUrl('https://example.com')).rejects.toThrow('HTTP 404')
+    await expect(fetchUrl('https://example.com')).rejects.toThrow('HTTP 404')
   })
 })
