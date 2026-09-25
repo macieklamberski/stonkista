@@ -26,14 +26,16 @@ export const findRate = async (
   )
 
   // Fallback to closest previous date (handles weekends/holidays).
-  rate ??= await findOrSkip(
-    db
-      .select()
-      .from(rates)
-      .where(and(eq(rates.fromCurrency, from), eq(rates.toCurrency, to), lte(rates.date, date)))
-      .orderBy(desc(rates.date))
-      .limit(1),
-  )
+  if (!rate) {
+    rate = await findOrSkip(
+      db
+        .select()
+        .from(rates)
+        .where(and(eq(rates.fromCurrency, from), eq(rates.toCurrency, to), lte(rates.date, date)))
+        .orderBy(desc(rates.date))
+        .limit(1),
+    )
+  }
 
   return rate
 }

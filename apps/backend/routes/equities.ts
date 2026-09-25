@@ -105,14 +105,16 @@ equitiesRoutes.get('/:ticker/:currencyOrDate?/:date?', async (context) => {
   )
 
   // If no exact date match, try closest previous date (handles weekends/holidays).
-  priceData ??= await findOrSkip(
-    db
-      .select()
-      .from(prices)
-      .where(and(eq(prices.tickerId, ticker.id), lte(prices.date, params.date)))
-      .orderBy(desc(prices.date))
-      .limit(1),
-  )
+  if (!priceData) {
+    priceData = await findOrSkip(
+      db
+        .select()
+        .from(prices)
+        .where(and(eq(prices.tickerId, ticker.id), lte(prices.date, params.date)))
+        .orderBy(desc(prices.date))
+        .limit(1),
+    )
+  }
 
   if (!priceData?.available || priceData.price === null) {
     return context.notFound()
