@@ -13,7 +13,7 @@
     "bullmq": "^6.2.0",
     "drizzle-orm": "^1.0.0-rc.5-ab785fc",
     "hono": "^4.13.3",
-    "ioredis": "^5.11.1",
+    "ioredis": "^6.0.0",
     "postgres": "^3.4.9"
   },
   "devDependencies": {
