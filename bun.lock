@@ -12,7 +12,7 @@
       "name": "@stonkista/backend",
       "dependencies": {
         "bullmq": "^6.2.0",
-        "drizzle-orm": "^1.0.0-rc.5-ab785fc",
+        "drizzle-orm": "^1.0.0-rc.5-5935859",
         "hono": "^4.13.3",
         "ioredis": "^5.11.1",
         "postgres": "^3.4.9",
