@@ -86,12 +86,14 @@ export const convertPrices = async (
   const from = fromCurrency.toUpperCase()
   const to = toCurrency.toUpperCase()
 
-  if (from === to || entries.length === 0) {
+  const lastEntry = entries.at(-1)
+
+  if (from === to || !lastEntry) {
     return entries
   }
 
   const dateFrom = entries[0].date
-  const dateTo = entries[entries.length - 1].date
+  const dateTo = lastEntry.date
   const ratesByDate = await fetchRatesByDate(from, to, dateFrom, dateTo)
   const result: Array<DatedPrice> = []
 
