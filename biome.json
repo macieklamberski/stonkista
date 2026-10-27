@@ -1,5 +1,5 @@
 {
-  "extends": ["kvalita/biome"],
+  "extends": ["kvalita/biome", "kvalita/biome-react", "kvalita/biome-drizzle"],
   "overrides": [
     {
       "includes": ["apps/backend/constants/**"],
