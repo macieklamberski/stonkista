@@ -32,15 +32,24 @@ const headers = (): Record<string, string> => {
 const MIN_REQUEST_INTERVAL_MS = 600
 const MAX_RETRIES = 3
 
-let pending: Promise<unknown> = Promise.resolve()
+let pending: Promise<void> = Promise.resolve()
 
 const throttle = <T>(request: () => Promise<T>): Promise<T> => {
-  const result = pending.then(request, request)
+  const previous = pending
 
-  pending = result.then(
-    () => sleep(MIN_REQUEST_INTERVAL_MS),
-    () => sleep(MIN_REQUEST_INTERVAL_MS),
-  )
+  const result = (async () => {
+    await previous
+
+    return request()
+  })()
+
+  pending = (async () => {
+    try {
+      await result
+    } catch {}
+
+    await sleep(MIN_REQUEST_INTERVAL_MS)
+  })()
 
   return result
 }
