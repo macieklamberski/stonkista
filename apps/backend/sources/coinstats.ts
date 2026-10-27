@@ -111,7 +111,11 @@ export const findCoin = (
     }
   }
 
-  return bySymbol.length > 0 ? byMarketCap(bySymbol) : undefined
+  if (bySymbol.length === 0) {
+    return
+  }
+
+  return byMarketCap(bySymbol)
 }
 
 export const fetchCoinsPage = async (page: number): Promise<Array<Coin>> => {
