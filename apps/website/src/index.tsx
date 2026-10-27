@@ -1,6 +1,6 @@
-import { render } from 'preact'
+import { type FunctionComponent, render } from 'preact'
 
-const App = () => {
+const App: FunctionComponent = () => {
   return (
     <main>
       <h1>Stonkista</h1>
@@ -14,4 +14,7 @@ const App = () => {
 }
 
 const root = document.getElementById('app')
-root && render(<App />, root)
+
+if (root) {
+  render(<App />, root)
+}

@@ -51,7 +51,7 @@ describe('parseDateParam', () => {
 
 describe('parseCurrencyDateParams', () => {
   it('should return today with no currency when no args provided', () => {
-    const expected = {
+    const expected: ParsedCurrencyDateParams = {
       currency: undefined,
       date: expect.stringMatching(dateFormatRegex),
     }

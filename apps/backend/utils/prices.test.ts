@@ -9,6 +9,7 @@ let mockDbRows: Array<{
   fetchedAt: Date
 }> = []
 
+// biome-ignore lint/plugin: The test run has no database, so the db instance is stubbed.
 mock.module('../instances/database.ts', () => ({
   db: {
     select: () => ({
@@ -26,7 +27,8 @@ mock.module('../instances/database.ts', () => ({
   },
 }))
 
-import { findPricesInRange, formatPrice, hasPrices } from './prices.ts'
+// Loads only once the database module is mocked.
+const { findPricesInRange, formatPrice, hasPrices } = await import('./prices.ts')
 
 describe('formatPrice', () => {
   it('should limit to 10 significant digits', () => {
