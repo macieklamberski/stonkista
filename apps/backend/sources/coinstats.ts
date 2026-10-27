@@ -29,8 +29,8 @@ const headers = (): Record<string, string> => {
 // The free plan allows 2 requests per second across every key on the account,
 // so requests queue behind each other here rather than at each call site. The
 // gap is process-local: a second instance would need a shared limiter.
-const MIN_REQUEST_INTERVAL_MS = 600
-const MAX_RETRIES = 3
+const minRequestIntervalMs = 600
+const maxRetries = 3
 
 let pending: Promise<void> = Promise.resolve()
 
@@ -48,7 +48,7 @@ const throttle = <T>(request: () => Promise<T>): Promise<T> => {
       await result
     } catch {}
 
-    await sleep(MIN_REQUEST_INTERVAL_MS)
+    await sleep(minRequestIntervalMs)
   })()
 
   return result
@@ -61,13 +61,13 @@ const request = async (url: string): Promise<Response> => {
     } catch (error) {
       const rateLimited = error instanceof Error && error.message === 'HTTP 429'
 
-      if (!rateLimited || attempt >= MAX_RETRIES) {
+      if (!rateLimited || attempt >= maxRetries) {
         throw error
       }
 
       // Backing off inside the request keeps a rate-limited page from failing
       // the whole sweep, which would re-fetch every earlier page on retry.
-      await sleep(MIN_REQUEST_INTERVAL_MS * 2 ** attempt)
+      await sleep(minRequestIntervalMs * 2 ** attempt)
     }
   }
 }
