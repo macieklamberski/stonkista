@@ -104,13 +104,19 @@ describe('isValidDateRange', () => {
 
 describe('parseDateRange', () => {
   it('should parse valid date range', () => {
-    const expected = { dateFrom: '2024-01-01', dateTo: '2024-01-31' }
+    const expected = {
+      dateFrom: '2024-01-01',
+      dateTo: '2024-01-31',
+    }
 
     expect(parseDateRange('2024-01-01..2024-01-31')).toEqual(expected)
   })
 
   it('should parse same-day range', () => {
-    const expected = { dateFrom: '2024-06-15', dateTo: '2024-06-15' }
+    const expected = {
+      dateFrom: '2024-06-15',
+      dateTo: '2024-06-15',
+    }
 
     expect(parseDateRange('2024-06-15..2024-06-15')).toEqual(expected)
   })
