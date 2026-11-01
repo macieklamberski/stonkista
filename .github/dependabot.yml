@@ -6,7 +6,7 @@ updates:
     schedule:
       interval: weekly
     cooldown:
-      default-days: 1
+      default-days: 7
     groups:
       minor-and-patch:
         update-types:
@@ -18,8 +18,35 @@ updates:
     schedule:
       interval: weekly
     cooldown:
-      default-days: 1
+      default-days: 7
     groups:
       actions:
         patterns:
           - '*'
+
+  - package-ecosystem: docker-compose
+    directory: /.docker
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: docker
+    directories:
+      - /apps/backend/.docker
+      - /apps/website/.docker
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      minor-and-patch:
+        group-by: dependency-name
+        update-types:
+          - minor
+          - patch
