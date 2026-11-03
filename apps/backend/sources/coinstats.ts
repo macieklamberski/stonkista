@@ -2,7 +2,7 @@ import { apiKey, pageSize, proxy } from '../constants/coinstats.ts'
 import type { HistoricalPriceData, PriceData } from '../types/sources.ts'
 import { sleep } from '../utils/async.ts'
 import { formatDate } from '../utils/dates.ts'
-import { fetchUrl } from '../utils/fetch.ts'
+import { fetchUrl, HttpError } from '../utils/fetch.ts'
 
 export type Coin = {
   id: string
@@ -59,7 +59,7 @@ const request = async (url: string): Promise<Response> => {
     try {
       return await throttle(() => fetchUrl(url, { proxy, headers: headers() }))
     } catch (error) {
-      const rateLimited = error instanceof Error && error.message === 'HTTP 429'
+      const rateLimited = error instanceof HttpError && error.status === 429
 
       if (!rateLimited || attempt >= maxRetries) {
         throw error
