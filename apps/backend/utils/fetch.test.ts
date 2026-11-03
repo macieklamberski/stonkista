@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, mock, spyOn } from 'bun:test'
-import { fetchUrl } from './fetch.ts'
+import { fetchUrl, HttpError } from './fetch.ts'
 
 describe('fetchUrl', () => {
   beforeEach(() => mock.restore())
@@ -13,7 +13,16 @@ describe('fetchUrl', () => {
 
   it('should throw when response is not ok', () => {
     spyOn(globalThis, 'fetch').mockResolvedValue(new Response('', { status: 404 }))
+    const throwing = () => fetchUrl('https://example.com')
 
-    expect(fetchUrl('https://example.com')).rejects.toThrow('HTTP 404')
+    expect(throwing()).rejects.toThrow('HTTP 404')
+  })
+
+  it('should throw HttpError carrying the response status', () => {
+    spyOn(globalThis, 'fetch').mockResolvedValue(new Response('', { status: 429 }))
+    const throwing = () => fetchUrl('https://example.com')
+
+    expect(throwing()).rejects.toThrow(HttpError)
+    expect(throwing()).rejects.toMatchObject({ status: 429 })
   })
 })
